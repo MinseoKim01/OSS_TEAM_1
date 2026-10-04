@@ -29,8 +29,8 @@
 | 이름 | 역할 | GitHub |
 |------|------|--------|
 | 김민서 | 팀장 | MinseoKim01 |
-| 이정주 | 개발 리드 | Gmaylily17-web |
-| 이지민 | 리뷰, 품질 담당 | Vryn |
+| 이정주 | 개발 리드 | maylily17-web |
+| 이지민 | 리뷰, 품질 담당 | VrynMN |
 | 강정우 | 문서 담당 | kjwoo0306 |
 
 기여 방법은 [CONTRIBUTING.md](CONTRIBUTING.md), 
