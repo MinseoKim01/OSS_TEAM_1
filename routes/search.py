@@ -1,2 +1,9 @@
-# routes/search.py - 분실물 검색 및 다중 조건 필터링 라우트 (feature/search)
+# routes/search.py
 
+from flask import Blueprint, render_template
+
+search_bp = Blueprint('search', __name__)
+
+@search_bp.route('/search')
+def search():
+    return render_template('search.html')
