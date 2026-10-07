@@ -216,3 +216,13 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# ---- 프로젝트 추가 항목 ----
+
+# 토큰·키를 넣는 파일 (config_example.py 만 올림)
+config.py
+
+data/*.csv
+!data/sample.csv
+.DS_Store
+Thumbs.db
