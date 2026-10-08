@@ -98,6 +98,3 @@ python app.py
 
 ## 라이선스
 MIT License — see [LICENSE](LICENSE)
-
-
-
