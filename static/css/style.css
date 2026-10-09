@@ -1,0 +1,61 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Pretendard", "Segoe UI", Roboto, sans-serif;
+    background-color: #f8fafc;
+    color: #0f172a;
+}
+
+.container {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+/* 헤더 */
+.header {
+    background: #ffffff;
+    border-bottom: 1px solid #f1f5f9;
+    padding: 16px 0;
+}
+
+.header-container {
+    display: flex;
+    align-items: center;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: #0f172a;
+    font-weight: 700;
+    font-size: 18px;
+}
+
+.logo-image {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+    flex-shrink: 0;
+    display: block;
+}
+
+/* 푸터 */
+.footer {
+    margin-top: 100px;
+    padding: 32px 0;
+    border-top: 1px solid #f1f5f9;
+    font-size: 13px;
+    color: #94a3b8;
+}
+
+.footer-container {
+    display: flex;
+    gap: 20px;
+}

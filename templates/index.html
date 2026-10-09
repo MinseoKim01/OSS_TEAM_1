@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <title>부경대 모아줍</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+    <header class="header">
+        <div class="container header-container">
+            <a href="/" class="logo">
+                <img class="logo-image" src="{{ url_for('static', filename='images/logo.png') }}" alt="" width="48" height="48">
+                <span class="logo-text">부경대 모아줍</span>
+            </a>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="container">
+
+            <section class="hero-section">
+                <div class="hero-text">
+                    <br><br><h1>잃어버린 물건, 함께 찾아요.</h1><br><br>
+                    <p>단톡방의 제보부터 직접 주운 물건까지 한곳에서 확인하세요.</p><br><br>
+                </div>
+                <div class="hero-buttons">
+                    <a href="/register" class="btn btn-primary">분실물 등록하기 <span class="icon">↗</span></a><br><br>
+                    <a href="/search" class="btn btn-secondary">분실물 검색하기 <span class="icon">🔍</span></a>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container footer-container">
+            <span>부경대 분실물</span>
+            <span>작은 발견이 누군가의 일상을 되찾아 줍니다.</span>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+
+</html>
