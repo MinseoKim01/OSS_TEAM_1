@@ -1,8 +1,15 @@
 # routes/main.py
 from flask import Blueprint, render_template
 
+# 메인 화면용 Blueprint 객체
 main_bp = Blueprint('main', __name__)
 
+# 여기에 /주소와 처리 함수를 연결
+# 브라우저의 /요청 -> main_bp -> index() -> templates/index.html로 연결
 @main_bp.route('/')
 def index():
+    
+    # 게시글 조회 코드 추가 예정
+    
     return render_template('index.html')
+

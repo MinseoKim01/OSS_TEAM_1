@@ -1,3 +1,5 @@
+# 테이블 구조 정의
+
 from extensions import db
 
 
