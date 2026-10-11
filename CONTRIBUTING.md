@@ -2,7 +2,7 @@
 
 ## 준비
 1. Python 3.12 이상 설치 → 저장소 클론 → `pip install -r requirements.txt`
-2. 실행: `python main.py`
+2. 실행: `python app.py`
 
 ## 작업 흐름 (팀원)
 1. 작업 전에 이슈를 먼저 만들거나 기존 이슈에 댓글로 배정 요청
