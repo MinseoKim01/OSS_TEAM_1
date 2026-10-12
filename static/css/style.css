@@ -70,3 +70,9 @@ body {
     display: flex;
     gap: 20px;
 }
+
+/* 메인 화면 분실물 목록 */
+#lost-items-list {
+    list-style: none;
+    padding: 0;
+}

@@ -29,13 +29,13 @@
                     <a href="/register" class="btn btn-primary">분실물 등록하기 <span class="icon">↗</span></a><br><br>
                     <a href="/search" class="btn btn-secondary">분실물 검색하기 <span class="icon">🔍</span></a>
                 </div>
+
+                <!--index.html 안에 list.html 포함-->
+                {% include "list.html" %}
             </section>
 
         </div>
     </main>
-
-    <!--index.html 안에 list.html 포함-->
-    {% include "list.html" %}
 
     <footer class="footer">
         <div class="container footer-container">
@@ -44,6 +44,7 @@
         </div>
     </footer>
 
+    <script src="{{ url_for('static', filename='js/list.js') }}"></script>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 
