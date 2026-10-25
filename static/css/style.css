@@ -102,9 +102,24 @@ body {
     color: #2563eb;
 }
 
-.sort-text {
+/* 정렬 옵션 */
+.sort-options {
+    display: flex;
+    align-items: center;
+    gap: 8px;
     font-size: 14px;
-    color: #64748b;
+    color: #94a3b8;
+    user-select: none;
+}
+
+.sort-opt {
+    cursor: pointer;
+    color: #94a3b8;
+}
+
+.sort-opt.active {
+    font-weight: 700;
+    color: #0f172a;
 }
 
 /* 카드 그리드 및 카드 */
