@@ -45,6 +45,50 @@ function updateStatsUI(stats) {
     if (foundEl) foundEl.textContent = Number(stats.found || 0).toLocaleString();
 }
 
+/**
+ * DB 변경 이벤트 감지 및 실시간 통계 수치 반영 리스너 (Realtime Listener)
+ * 주기적 변경 감지(Polling) 및 탭 포커스 복귀(visibilitychange)를 통해
+ * 새 글 등록/삭제 시 통계 숫자가 실시간으로 반영되도록 함
+ * @param {Function} onCountChanged - 건수 변경 시 추가 동작(목록 갱신 등)
+ * @param {number} intervalMs - 감지 주기 (기본 3초)
+ */
+function initRealtimeStatsListener(onCountChanged, intervalMs = 3000) {
+    let lastStats = null;
+
+    function checkStatsUpdate() {
+        fetchItemStats()
+            .then(stats => {
+                updateStatsUI(stats);
+
+                // 이전 집계 건수와 달라진 경우 (새 글 등록 또는 삭제 감지)
+                if (lastStats !== null && (lastStats.total !== stats.total || lastStats.report !== stats.report || lastStats.found !== stats.found)) {
+                    if (typeof onCountChanged === 'function') {
+                        onCountChanged();
+                    }
+                }
+                lastStats = stats;
+            })
+            .catch(() => { });
+    }
+
+    // 주기적 DB 변경 감지
+    setInterval(checkStatsUpdate, intervalMs);
+
+    // 다른 탭에서 등록/삭제 후 복귀 시 즉시 감지
+    document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) {
+            checkStatsUpdate();
+        }
+    });
+
+    // 브라우저 탭 간 실시간 변경 이벤트 감지
+    window.addEventListener('storage', (e) => {
+        if (e.key === 'moajup_db_changed') {
+            checkStatsUpdate();
+        }
+    });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const listContainer = document.getElementById('lost-items-list');
     const countBadge = document.getElementById('items-count');
@@ -53,11 +97,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!listContainer) return;
 
     let currentItems = [];
-
-    // 상단 통계 요약 카드 초기 데이터 연동
-    fetchItemStats()
-        .then(stats => updateStatsUI(stats))
-        .catch(err => console.error('통계 데이터 연동 오류:', err));
 
     // 카드 렌더링 함수
     function renderCards(items) {
@@ -110,15 +149,30 @@ document.addEventListener('DOMContentLoaded', () => {
     if (sortRecent) sortRecent.addEventListener('click', () => sortBy('recent'));
     if (sortOldest) sortOldest.addEventListener('click', () => sortBy('oldest'));
 
-    fetch('/api/items')
-        .then(response => response.json())
-        .then(items => {
-            currentItems = items;
-            if (countBadge) {
-                countBadge.textContent = items.length;
-            }
-            // 목록 데이터 기반으로도 통계 카드 수치 동기화
-            updateStatsUI(countItemsByType(items));
-            renderCards(currentItems);
-        });
+    // 목록 데이터 로딩 함수
+    function loadItems() {
+        fetch('/api/items')
+            .then(response => response.json())
+            .then(items => {
+                currentItems = items;
+                if (countBadge) {
+                    countBadge.textContent = items.length;
+                }
+                updateStatsUI(countItemsByType(items));
+                renderCards(currentItems);
+            });
+    }
+
+    // 초기 목록 로드
+    loadItems();
+
+    // 초기 상단 통계 수치 로드
+    fetchItemStats()
+        .then(stats => updateStatsUI(stats))
+        .catch(err => console.error('통계 데이터 연동 오류:', err));
+
+    // DB 변경 이벤트 감지 Realtime 리스너 시작 (새 글 등록/삭제 시 통계 및 목록 실시간 자동 갱신)
+    initRealtimeStatsListener(() => {
+        loadItems();
+    }, 3000);
 });
