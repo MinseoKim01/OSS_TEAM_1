@@ -72,6 +72,77 @@ body {
 }
 
 /* =========================================
+   상단 통계 요약 카드 3종
+   ========================================= */
+
+.stats-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 36px;
+}
+
+.stat-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 20px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.stat-label-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.stat-label {
+    font-size: 15px;
+    color: #475569;
+    font-weight: 500;
+}
+
+.stat-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.dot-blue {
+    background-color: #4f46e5;
+}
+
+.dot-green {
+    background-color: #059669;
+}
+
+.stat-value-wrap {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+}
+
+.stat-number {
+    font-size: 26px;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.stat-unit {
+    font-size: 14px;
+    color: #64748b;
+}
+
+@media (max-width: 768px) {
+    .stats-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* =========================================
    분실물 목록 및 카드 UI
    ========================================= */
 
@@ -172,3 +243,4 @@ body {
     border-top: 1px solid #f1f5f9;
     margin: 20px 0;
 }
+
