@@ -31,6 +31,20 @@ function countItemsByType(items) {
     }, { total: 0, report: 0, found: 0 });
 }
 
+/**
+ * 통계 카드 카운터 UI에 집계 데이터(N건) 동적 출력 및 숫자 포맷팅
+ * @param {{total: number, report: number, found: number}} stats
+ */
+function updateStatsUI(stats) {
+    const totalEl = document.getElementById('stat-total');
+    const reportEl = document.getElementById('stat-report');
+    const foundEl = document.getElementById('stat-found');
+
+    if (totalEl) totalEl.textContent = Number(stats.total || 0).toLocaleString();
+    if (reportEl) reportEl.textContent = Number(stats.report || 0).toLocaleString();
+    if (foundEl) foundEl.textContent = Number(stats.found || 0).toLocaleString();
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const listContainer = document.getElementById('lost-items-list');
     const countBadge = document.getElementById('items-count');
@@ -39,6 +53,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!listContainer) return;
 
     let currentItems = [];
+
+    // 상단 통계 요약 카드 초기 데이터 연동
+    fetchItemStats()
+        .then(stats => updateStatsUI(stats))
+        .catch(err => console.error('통계 데이터 연동 오류:', err));
 
     // 카드 렌더링 함수
     function renderCards(items) {
@@ -98,6 +117,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (countBadge) {
                 countBadge.textContent = items.length;
             }
+            // 목록 데이터 기반으로도 통계 카드 수치 동기화
+            updateStatsUI(countItemsByType(items));
             renderCards(currentItems);
         });
 });
