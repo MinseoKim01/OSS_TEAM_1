@@ -2,6 +2,35 @@
  * 분실물 목록 조회 및 카드 UI 렌더링
  */
 
+/**
+ * 전체 및 유형별(type: report / found) 등록 건수 카운트(count) 집계 함수 (API 호출)
+ * @returns {Promise<{total: number, report: number, found: number}>}
+ */
+async function fetchItemStats() {
+    const response = await fetch('/api/stats');
+    if (!response.ok) {
+        throw new Error('통계 집계 데이터를 불러오지 못했습니다.');
+    }
+    return await response.json();
+}
+
+/**
+ * 분실물 목록 데이터에서 유형별(report / found) 및 전체 등록 건수 카운트 집계 함수 (클라이언트 집계)
+ * @param {Array} items
+ * @returns {{total: number, report: number, found: number}}
+ */
+function countItemsByType(items) {
+    return items.reduce((acc, item) => {
+        acc.total += 1;
+        if (item.type === 'report') {
+            acc.report += 1;
+        } else if (item.type === 'found') {
+            acc.found += 1;
+        }
+        return acc;
+    }, { total: 0, report: 0, found: 0 });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const listContainer = document.getElementById('lost-items-list');
     const countBadge = document.getElementById('items-count');

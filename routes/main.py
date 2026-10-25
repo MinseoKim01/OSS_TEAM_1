@@ -17,7 +17,7 @@ def index():
 def get_items():
     items = []
 
-    # 단톡방 제보 게시글 조회
+    # 단톡방 제보 게시글 조회 (type: report)
     for item in ReportItem.query.all():
         dt = datetime.combine(item.notice_date, item.notice_time)
         items.append({
@@ -32,7 +32,7 @@ def get_items():
             'description': item.description
         })
 
-    # 직접 습득 게시글 조회
+    # 직접 습득 게시글 조회 (type: found)
     for item in FoundItem.query.all():
         dt = datetime.combine(item.found_date, item.found_time)
         items.append({
@@ -56,4 +56,15 @@ def get_items():
     return jsonify(items)
 
 
+# 전체 및 유형별(type: report / found) 등록 건수 카운트(count) 집계 API
+@main_bp.route('/api/stats')
+def get_stats():
+    report_count = ReportItem.query.count()    # 단톡방 제보 건수 (report)
+    found_count = FoundItem.query.count()     # 직접 습득 건수 (found)
+    total_count = report_count + found_count  # 전체 등록 건수 (total)
 
+    return jsonify({
+        'total': total_count,
+        'report': report_count,
+        'found': found_count
+    })
