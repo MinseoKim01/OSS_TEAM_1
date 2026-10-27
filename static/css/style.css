@@ -57,6 +57,23 @@ body {
     display: block;
 }
 
+/* templates/search.html: 검색 영역의 글자, 입력칸, 버튼 크기 조절 */
+.search-controls label {
+    font-size: 18px;
+}
+
+.search-controls input,
+.search-controls button {
+    height: 44px;
+    padding: 0 12px;
+    font-size: 16px;
+}
+
+.search-controls input {
+    width: 320px;
+    max-width: 100%;
+}
+
 /* 푸터 */
 .footer {
     margin-top: 100px;

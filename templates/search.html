@@ -3,12 +3,30 @@
 <html lang="ko">
 
 <head>
-    <title>검색</title>
+    <title>부경대 모아줍</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 
 <body>
-    <p>검색기능구현</p>
+    <header class="header">
+        <div class="container header-container">
+            <a href="/" class="logo">
+                <img class="logo-image" src="{{ url_for('static', filename='images/logo.png') }}" alt="" width="48" height="48">
+                <span class="logo-text">부경대 모아줍</span>
+            </a>
+        </div>
+    </header>
+
+    <main class="container">
+        <br><br>
+        <h1>분실물 검색</h1>
+        <br><br>
+        <div class="search-controls">
+            <label for="keyword">키워드</label>
+            <input type="text" id="keyword" placeholder="분실물 이름을 입력하세요">
+            <button type="button">검색</button>
+        </div>
+    </main>
 </body>
 
 </html>
