@@ -200,14 +200,14 @@ body {
     color: #ffffff;
 }
 
-.register-actions button:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-}
-
 /* 등록 폼: 작은 화면에서 입력칸과 유형 선택 영역이 잘리지 않도록 한 열로 배치 */
 @media (max-width: 600px) {
     .register-row {
         grid-template-columns: 1fr;
     }
+}
+
+/* 등록 폼: 입력 검증 결과를 입력 영역과 구분하기 위한 여백 */
+.register-message {
+    margin-bottom: 24px;
 }

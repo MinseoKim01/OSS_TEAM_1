@@ -27,19 +27,40 @@
             알고 있는 정보를 남겨 주세요. 물건의 주인을 찾는 데 도움이 됩니다.
         </p>
 
-        <form class="register-form">
+        <form class="register-form"
+              method="post"
+              action="{{ url_for('register.register') }}">
+
+            {% if errors %}
+            <div class="register-message" role="alert">
+                {% for error in errors %}
+                <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {% if validated %}
+            <p class="register-message" role="status">
+                입력값 확인이 완료되었습니다. 현재 DB 저장 기능은 연결되지 않았습니다.
+            </p>
+            {% endif %}
+
             <fieldset>
                 <legend>등록 유형</legend>
                 <div class="register-row">
                     <label class="type-option">
-                        <input type="radio" name="type" value="report" checked>
+                        <input type="radio" name="type" value="report"
+                               {% if values.get('type') == 'report' %}checked{% endif %}
+                               required>
                         <span>
                             <strong>제보형</strong>
                             <small>학과 단톡방 공지를 봤어요</small>
                         </span>
                     </label>
                     <label class="type-option">
-                        <input type="radio" name="type" value="found">
+                        <input type="radio" name="type" value="found"
+                               {% if values.get('type') == 'found' %}checked{% endif %}
+                               required>
                         <span>
                             <strong>습득형</strong>
                             <small>물건을 직접 주웠어요</small>
@@ -53,41 +74,51 @@
             <div class="register-row">
                 <label>
                     <span id="date-label">안내 날짜</span>
-                    <input type="date" name="date" required>
+                    <input type="date" name="date"
+                           value="{{ values.get('date', '') }}" required>
                 </label>
                 <label>
                     <span id="time-label">안내 시간</span>
-                    <input type="time" name="time" required>
+                    <input type="time" name="time"
+                           value="{{ values.get('time', '') }}" required>
                 </label>
             </div>
 
             <label>
                 물건 이름
-                <input name="name" placeholder="예: 검정색 무선 이어폰" required>
+                <input name="name"
+                       value="{{ values.get('name', '') }}"
+                       placeholder="예: 검정색 무선 이어폰" required>
             </label>
 
             <label>
                 특징
                 <textarea name="description" rows="5"
                           placeholder="색상, 브랜드, 모양 등 구별할 수 있는 특징을 적어 주세요."
-                          required></textarea>
+                          required>{{ values.get('description', '') }}</textarea>
             </label>
 
             <div id="report-fields">
                 <label>
                     단톡방 이름
-                    <input name="chat_name" placeholder="예: 컴퓨터공학과 공지방" required>
+                    <input name="chat_name"
+                           value="{{ values.get('chat_name', '') }}"
+                           placeholder="예: 컴퓨터공학과 공지방" required>
                 </label>
             </div>
 
             <div id="found-fields" hidden>
                 <label>
                     습득 장소
-                    <input name="place" placeholder="예: 누리관 1층 커널" required>
+                    <input name="place"
+                           value="{{ values.get('place', '') }}"
+                           placeholder="예: 누리관 1층 커널" disabled>
                 </label>
                 <label>
                     보관 위치
-                    <input name="storage" placeholder="예: 컴퓨터공학과 학과 사무실" required>
+                    <input name="storage"
+                           value="{{ values.get('storage', '') }}"
+                           placeholder="예: 컴퓨터공학과 학과 사무실" disabled>
                 </label>
             </div>
 
@@ -95,9 +126,12 @@
                 <label>
                     삭제 비밀번호
                     <input type="password" name="password"
-                           inputmode="numeric" maxlength="4"
+                           inputmode="numeric"
+                           pattern="[0-9]{4}"
+                           minlength="4" maxlength="4"
                            autocomplete="new-password"
                            placeholder="숫자 4자리"
+                           title="숫자 4자리를 입력해 주세요."
                            aria-describedby="password-help" required>
                 </label>
                 <p id="password-help" class="register-help">
@@ -107,10 +141,11 @@
 
             <div class="register-actions">
                 <a href="{{ url_for('main.index') }}">취소</a>
-                <button type="submit" disabled>입력 확인</button>
+                <button type="submit">입력 확인</button>
             </div>
         </form>
     </main>
+
     <script src="{{ url_for('static', filename='js/register.js') }}"></script>
 </body>
 </html>
