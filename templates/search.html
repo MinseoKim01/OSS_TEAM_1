@@ -22,8 +22,18 @@
         <h1>분실물 검색</h1>
         <br><br>
         <div class="search-controls">
-            <label for="keyword">키워드</label>
-            <input type="text" id="keyword" placeholder="분실물 이름을 입력하세요">
+            <div class="search-field">
+                <label for="keyword">키워드</label>
+                <input type="text" id="keyword" placeholder="분실물 이름을 입력하세요">
+            </div>
+            <div class="search-field">
+                <label for="start-date">시작 날짜</label>
+                <input type="date" id="start-date" name="start_date">
+            </div>
+            <div class="search-field">
+                <label for="end-date">종료 날짜</label>
+                <input type="date" id="end-date" name="end_date">
+            </div>
             <button type="button">검색</button>
         </div>
     </main>
