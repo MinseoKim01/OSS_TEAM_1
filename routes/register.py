@@ -9,4 +9,4 @@ register_bp = Blueprint('register', __name__)
 # 브라우저의 /register요청 -> register_bp -> register() -> templates/register.html로 연결
 @register_bp.route('/register')
 def register():
-    return render_template('register.html')
+    return render_template('register.html', values={'type': 'report'}, errors=[], validated=False)

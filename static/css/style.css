@@ -70,3 +70,29 @@ body {
     display: flex;
     gap: 20px;
 }
+
+/* 등록 페이지: 제목·설명·입력 영역의 배치와 여백을 위한 스타일 */
+.register-page {
+    padding-top: 48px;
+    padding-bottom: 64px;
+}
+
+.register-caption {
+    margin-top: 40px;
+}
+
+.register-page h1 {
+    margin-top: 16px;
+    font-size: 36px;
+}
+
+.register-intro {
+    margin: 24px 0 36px;
+}
+
+.register-form {
+    padding: 24px;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    background-color: #ffffff;
+}

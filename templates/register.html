@@ -1,14 +1,29 @@
 <!--등록 화면의 전체 구조 담당-->
 <!DOCTYPE html>
 <html lang="ko">
-
 <head>
-    <title>등록</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>분실물 등록 | 부경대 모아줍</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
-
 <body>
-    <p>등록기능구현</p>
+    <header class="header">
+        <div class="container header-container">
+            <a href="{{ url_for('main.index') }}" class="logo">
+                <img class="logo-image" src="{{ url_for('static', filename='images/logo.png') }}" alt="" width="48" height="48">
+                <span>부경대 모아줍</span>
+            </a>
+        </div>
+    </header>
+    <main class="container register-page">
+        <a href="{{ url_for('main.index') }}">← 목록으로 돌아가기</a>
+        <p class="register-caption">SHARE A FIND</p>
+        <h1>분실물 등록</h1>
+        <p class="register-intro">알고 있는 정보를 남겨 주세요. 물건의 주인을 찾는 데 도움이 됩니다.</p>
+        <section class="register-form">
+            <p>등록할 물건 정보를 입력하는 화면입니다.</p>
+        </section>
+    </main>
 </body>
-
 </html>
