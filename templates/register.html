@@ -80,7 +80,7 @@
                 </label>
             </div>
 
-            <div id="found-fields">
+            <div id="found-fields" hidden>
                 <label>
                     습득 장소
                     <input name="place" placeholder="예: 누리관 1층 커널" required>
@@ -111,5 +111,6 @@
             </div>
         </form>
     </main>
+    <script src="{{ url_for('static', filename='js/register.js') }}"></script>
 </body>
 </html>
