@@ -57,7 +57,7 @@ body {
     display: block;
 }
 
-/* templates/search.html: 검색 입력칸과 버튼을 나란히 배치하고 공간이 부족하면 줄바꿈 */
+/* search 페이지 스타일 지정 */
 .search-controls {
     display: flex;
     flex-wrap: wrap;
@@ -65,14 +65,12 @@ body {
     gap: 16px;
 }
 
-/* templates/search.html: 각 입력칸 위에 라벨을 배치 */
 .search-controls .search-field {
     display: flex;
     flex-direction: column;
     gap: 8px;
 }
 
-/* templates/search.html: 검색 영역의 글자, 입력칸, 버튼 크기 조절 */
 .search-controls label {
     font-size: 18px;
 }
@@ -89,7 +87,6 @@ body {
     max-width: 100%;
 }
 
-/* templates/search.html: 날짜 입력칸 두 개가 검색 영역에 들어가도록 너비 조절 */
 .search-controls input[type="date"] {
     width: 232px;
 }
