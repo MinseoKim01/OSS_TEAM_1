@@ -49,8 +49,12 @@ def register():
                     errors.append(f'{label} 형식이 올바르지 않습니다.')
 
         password = values.pop('password', '')
-        if not re.fullmatch(r'[0-9]{4}', password):
-            errors.append('삭제 비밀번호는 숫자 4자리로 입력해 주세요.')
+        if not password:
+            errors.append('삭제 비밀번호를 입력해 주세요.')
+        elif not re.fullmatch(r'[0-9]+', password):
+            errors.append('삭제 비밀번호는 숫자만 입력해 주세요.')
+        elif len(password) != 4:
+            errors.append('삭제 비밀번호는 정확히 4자리로 입력해 주세요.')
 
         validated = not errors
         # shortcut: 입력 검증만 수행, DB 저장은 후속 저장 이슈에서 연결.
