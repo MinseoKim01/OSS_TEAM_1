@@ -1,1 +1,16 @@
 <!--삭제 기능 부분 템플릿-->
+<dialog id="delete-dialog" class="delete-dialog">
+    <form method="dialog">
+        <h3>게시글 삭제 안내</h3>
+        <p>이 게시글을 삭제할까요? 삭제 후에는 복구할 수 없습니다.</p>
+        <p class="delete-dialog-hint">등록할 때 설정한 숫자 4자리 비밀번호를 입력해 주세요.</p>
+
+        <label for="delete-password">삭제 비밀번호</label>
+        <input id="delete-password" type="password" maxlength="4" placeholder="숫자 4자리">
+
+        <div class="delete-dialog-buttons">
+            <button type="submit" value="cancel" class="delete-cancel-button">취소</button>
+            <button type="submit" value="confirm" class="delete-confirm-button">삭제 확인</button>
+        </div>
+    </form>
+</dialog>
