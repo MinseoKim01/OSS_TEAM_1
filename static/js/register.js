@@ -1,8 +1,9 @@
 /*
  * 등록 화면의 브라우저 동작 담당.
 */
-/* 등록 유형별 입력칸 전환 및 공백만 입력한 값 안내 */
+/* 등록 유형별 입력칸 전환 및 입력값 오류 안내 */
 const form = document.querySelector('.register-form');
+const password = form.elements.namedItem('password');
 
 function updateType() {
     const found = form.elements.type.value === 'found';
@@ -29,6 +30,20 @@ function updateType() {
     }
 }
 
+function validatePassword() {
+    let message = '';
+
+    if (!password.value) {
+        message = '삭제 비밀번호를 입력해 주세요.';
+    } else if (!/^[0-9]+$/.test(password.value)) {
+        message = '삭제 비밀번호는 숫자만 입력해 주세요.';
+    } else if (password.value.length !== 4) {
+        message = '삭제 비밀번호는 정확히 4자리로 입력해 주세요.';
+    }
+
+    password.setCustomValidity(message);
+}
+
 for (const radio of form.querySelectorAll('input[name="type"]')) {
     radio.addEventListener('change', updateType);
 }
@@ -47,7 +62,14 @@ form.addEventListener('submit', (event) => {
 });
 
 form.addEventListener('input', (event) => {
-    event.target.setCustomValidity('');
+    if (event.target === password) {
+        validatePassword();
+    } else {
+        event.target.setCustomValidity('');
+    }
 });
 
+password.addEventListener('invalid', validatePassword);
+
 updateType();
+validatePassword();
