@@ -42,12 +42,6 @@
             </div>
             {% endif %}
 
-            {% if validated %}
-            <p class="register-message" role="status">
-                게시글이 저장되었습니다.
-            </p>
-            {% endif %}
-
             <!-- 같은 name의 라디오 버튼은 하나만 선택 가능 -->
             <fieldset>
                 <legend>등록 유형</legend>
@@ -156,7 +150,7 @@
 
             <div class="register-actions">
                 <a href="{{ url_for('main.index') }}">취소</a>
-                <button type="submit">입력 확인</button>
+                <button type="submit">등록하고 목록으로</button>
             </div>
         </form>
     </main>
