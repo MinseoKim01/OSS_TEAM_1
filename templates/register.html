@@ -1,14 +1,151 @@
-<!--등록 화면의 전체 구조 담당-->
+<!-- 등록 화면의 전체 구조 담당 -->
 <!DOCTYPE html>
 <html lang="ko">
-
 <head>
-    <title>등록</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>분실물 등록 | 부경대 모아줍</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
-
 <body>
-    <p>등록기능구현</p>
-</body>
+    <header class="header">
+        <div class="container header-container">
+            <a href="{{ url_for('main.index') }}" class="logo">
+                <img class="logo-image"
+                     src="{{ url_for('static', filename='images/logo.png') }}"
+                     alt="" width="48" height="48">
+                <span>부경대 모아줍</span>
+            </a>
+        </div>
+    </header>
 
+    <main class="container register-page">
+        <a href="{{ url_for('main.index') }}">← 목록으로 돌아가기</a>
+        <p class="register-caption">SHARE A FIND</p>
+        <h1>분실물 등록</h1>
+        <p class="register-intro">
+            알고 있는 정보를 남겨 주세요. 물건의 주인을 찾는 데 도움이 됩니다.
+        </p>
+
+        <form class="register-form"
+              method="post"
+              action="{{ url_for('register.register') }}">
+
+            {% if errors %}
+            <div class="register-message" role="alert">
+                {% for error in errors %}
+                <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {% if validated %}
+            <p class="register-message" role="status">
+                입력값 확인이 완료되었습니다. 현재 DB 저장 기능은 연결되지 않았습니다.
+            </p>
+            {% endif %}
+
+            <fieldset>
+                <legend>등록 유형</legend>
+                <div class="register-row">
+                    <label class="type-option">
+                        <input type="radio" name="type" value="report"
+                               {% if values.get('type') == 'report' %}checked{% endif %}
+                               required>
+                        <span>
+                            <strong>제보형</strong>
+                            <small>학과 단톡방 공지를 봤어요</small>
+                        </span>
+                    </label>
+                    <label class="type-option">
+                        <input type="radio" name="type" value="found"
+                               {% if values.get('type') == 'found' %}checked{% endif %}
+                               required>
+                        <span>
+                            <strong>습득형</strong>
+                            <small>물건을 직접 주웠어요</small>
+                        </span>
+                    </label>
+                </div>
+            </fieldset>
+
+            <p class="register-help">모든 표시된 항목은 필수입니다.</p>
+
+            <div class="register-row">
+                <label>
+                    <span id="date-label">안내 날짜</span>
+                    <input type="date" name="date"
+                           value="{{ values.get('date', '') }}" required>
+                </label>
+                <label>
+                    <span id="time-label">안내 시간</span>
+                    <input type="time" name="time"
+                           value="{{ values.get('time', '') }}" required>
+                </label>
+            </div>
+
+            <label>
+                물건 이름
+                <input name="name"
+                       value="{{ values.get('name', '') }}"
+                       placeholder="예: 검정색 무선 이어폰" required>
+            </label>
+
+            <label>
+                특징
+                <textarea name="description" rows="5"
+                          placeholder="색상, 브랜드, 모양 등 구별할 수 있는 특징을 적어 주세요."
+                          required>{{ values.get('description', '') }}</textarea>
+            </label>
+
+            <div id="report-fields">
+                <label>
+                    단톡방 이름
+                    <input name="chat_name"
+                           value="{{ values.get('chat_name', '') }}"
+                           placeholder="예: 컴퓨터공학과 공지방" required>
+                </label>
+            </div>
+
+            <div id="found-fields" hidden>
+                <label>
+                    습득 장소
+                    <input name="place"
+                           value="{{ values.get('place', '') }}"
+                           placeholder="예: 누리관 1층 커널" disabled>
+                </label>
+                <label>
+                    보관 위치
+                    <input name="storage"
+                           value="{{ values.get('storage', '') }}"
+                           placeholder="예: 컴퓨터공학과 학과 사무실" disabled>
+                </label>
+            </div>
+
+            <div class="register-password">
+                <label>
+                    삭제 비밀번호
+                    <input type="password" name="password"
+                           inputmode="numeric"
+                           pattern="[0-9]{4}"
+                           minlength="4" maxlength="4"
+                           autocomplete="new-password"
+                           placeholder="숫자 4자리"
+                           title="숫자 4자리를 입력해 주세요."
+                           aria-describedby="password-help" required>
+                </label>
+                <p id="password-help" class="register-help">
+                    게시글 삭제 시 필요합니다. 숫자 4자리를 입력해 주세요.
+                </p>
+            </div>
+
+            <div class="register-actions">
+                <a href="{{ url_for('main.index') }}">취소</a>
+                <button type="submit">입력 확인</button>
+            </div>
+        </form>
+    </main>
+
+    <script src="{{ url_for('static', filename='js/register.js') }}"></script>
+</body>
 </html>
