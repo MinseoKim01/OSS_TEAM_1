@@ -8,7 +8,10 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from storage import save_item
 
-from flask import Blueprint, render_template, request
+from flask import (
+    Blueprint, current_app, redirect,
+    render_template, request, url_for,
+)
 
 # 등록 화면용 Blueprint 객체
 register_bp = Blueprint('register', __name__)
@@ -19,7 +22,6 @@ register_bp = Blueprint('register', __name__)
 def register():
     values = {'type': 'report'}
     errors = []
-    validated = False
     # DB에 저장할 bcrypt 해시값
     password_hash = None
     storage_failed = False
@@ -62,7 +64,7 @@ def register():
                 except ValueError:
                     errors.append(f'{label} 형식이 올바르지 않습니다.')
 
-        # 비밀번호는 꺼낸 뒤 values에서 제거해 화면에 다시 전달하지 않음
+        # 비밀번호를 화면에 다시 전달하지 않도록 values에서 제거
         password = values.pop('password', '')
 
         if not password:
@@ -72,7 +74,7 @@ def register():
         elif len(password) != 4:
             errors.append('삭제 비밀번호는 정확히 4자리로 입력해 주세요.')
 
-        # 모든 입력값이 정상일 때만 비밀번호를 해싱
+        # 모든 입력값이 정상일 때 비밀번호 해싱
         if not errors:
             try:
                 password_hash = bcrypt.hashpw(
@@ -83,6 +85,32 @@ def register():
                 errors.append(
                     '비밀번호 처리 중 오류가 발생했습니다. 다시 시도해 주세요.'
                 )
+
+        del password
+
+        # 검증과 해싱이 성공한 경우에만 해시값을 저장
+        if not errors:
+            try:
+                save_item(values, password_hash)
+            except SQLAlchemyError as error:
+                detail = getattr(
+                    getattr(error, 'orig', None), 'diag', None
+                )
+
+                current_app.logger.error(
+                    '저장 오류: %s / 테이블: %s / 컬럼: %s',
+                    type(error).__name__,
+                    getattr(detail, 'table_name', None),
+                    getattr(detail, 'column_name', None),
+                )
+
+                storage_failed = True
+                errors.append(
+                    '저장 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.'
+                )
+            else:
+                # 저장 성공 후 목록으로 이동
+                return redirect(url_for('main.index'), code=303)
 
         # 해싱 처리 이후에는 평문 비밀번호를 더 사용하지 않음
         del password
@@ -98,9 +126,6 @@ def register():
                     '저장 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.'
                 )
 
-        # 저장까지 성공해야 완료 상태로 처리
-        validated = not errors
-
     # 입력값과 검사 결과를 HTML에 전달
     # 저장소 오류는 HTTP 500, 잘못된 입력은 HTTP 400으로 구분
     if storage_failed:
@@ -114,5 +139,4 @@ def register():
         'register.html',
         values=values,
         errors=errors,
-        validated=validated,
     ), status_code
