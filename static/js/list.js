@@ -1,38 +1,43 @@
-/*
+
+/**
  * 분실물 목록 조회 및 카드 UI 렌더링
  */
 
 /**
- * 전체 및 유형별(type: report / found) 등록 건수 카운트(count) 집계 함수 (API 호출)
+ * 전체 및 유형별(type: report / found) 등록 건수 카운트 집계 함수 (API 호출)
  * @returns {Promise<{total: number, report: number, found: number}>}
  */
 async function fetchItemStats() {
     const response = await fetch('/api/stats');
+
     if (!response.ok) {
         throw new Error('통계 집계 데이터를 불러오지 못했습니다.');
     }
+
     return await response.json();
 }
 
 /**
- * 분실물 목록 데이터에서 유형별(report / found) 및 전체 등록 건수 카운트 집계 함수 (클라이언트 집계)
+ * 분실물 목록 데이터에서 유형별(report / found) 및 전체 등록 건수 카운트 집계 함수
  * @param {Array} items
  * @returns {{total: number, report: number, found: number}}
  */
 function countItemsByType(items) {
     return items.reduce((acc, item) => {
         acc.total += 1;
+
         if (item.type === 'report') {
             acc.report += 1;
         } else if (item.type === 'found') {
             acc.found += 1;
         }
+
         return acc;
     }, { total: 0, report: 0, found: 0 });
 }
 
 /**
- * 통계 카드 카운터 UI에 집계 데이터(N건) 동적 출력 및 숫자 포맷팅
+ * 통계 카드 카운터 UI에 집계 데이터 동적 출력 및 숫자 포맷팅
  * @param {{total: number, report: number, found: number}} stats
  */
 function updateStatsUI(stats) {
@@ -40,15 +45,24 @@ function updateStatsUI(stats) {
     const reportEl = document.getElementById('stat-report');
     const foundEl = document.getElementById('stat-found');
 
-    if (totalEl) totalEl.textContent = Number(stats.total || 0).toLocaleString();
-    if (reportEl) reportEl.textContent = Number(stats.report || 0).toLocaleString();
-    if (foundEl) foundEl.textContent = Number(stats.found || 0).toLocaleString();
+    if (totalEl) {
+        totalEl.textContent = Number(stats.total || 0).toLocaleString();
+    }
+
+    if (reportEl) {
+        reportEl.textContent = Number(stats.report || 0).toLocaleString();
+    }
+
+    if (foundEl) {
+        foundEl.textContent = Number(stats.found || 0).toLocaleString();
+    }
 }
 
 /**
- * DB 변경 이벤트 감지 및 실시간 통계 수치 반영 리스너 (Realtime Listener)
+ * DB 변경 이벤트 감지 및 실시간 통계 수치 반영 리스너
  * 주기적 변경 감지(Polling) 및 탭 포커스 복귀(visibilitychange)를 통해
- * 새 글 등록/삭제 시 통계 숫자가 실시간으로 반영되도록 함
+ * 새 글 등록/삭제 시 통계 숫자가 반영되도록 함
+ *
  * @param {Function} onCountChanged - 건수 변경 시 추가 동작(목록 갱신 등)
  * @param {number} intervalMs - 감지 주기 (기본 3초)
  */
@@ -60,15 +74,25 @@ function initRealtimeStatsListener(onCountChanged, intervalMs = 3000) {
             .then(stats => {
                 updateStatsUI(stats);
 
-                // 이전 집계 건수와 달라진 경우 (새 글 등록 또는 삭제 감지)
-                if (lastStats !== null && (lastStats.total !== stats.total || lastStats.report !== stats.report || lastStats.found !== stats.found)) {
+                // 이전 집계 건수와 달라진 경우 새 글 등록 또는 삭제 감지
+                if (
+                    lastStats !== null &&
+                    (
+                        lastStats.total !== stats.total ||
+                        lastStats.report !== stats.report ||
+                        lastStats.found !== stats.found
+                    )
+                ) {
                     if (typeof onCountChanged === 'function') {
                         onCountChanged();
                     }
                 }
+
                 lastStats = stats;
             })
-            .catch(() => { });
+            .catch(() => {
+                // 통계 조회 실패 시 별도 처리 없이 다음 주기에 다시 확인
+            });
     }
 
     // 주기적 DB 변경 감지
@@ -89,12 +113,18 @@ function initRealtimeStatsListener(onCountChanged, intervalMs = 3000) {
     });
 }
 
+
 document.addEventListener('DOMContentLoaded', () => {
     const listContainer = document.getElementById('lost-items-list');
+
+    // 빈 목록 안내 화면
+    const emptyState = document.getElementById('empty-state');
+
     const countBadge = document.getElementById('items-count');
     const sortRecent = document.getElementById('sort-recent');
     const sortOldest = document.getElementById('sort-oldest');
     const modal = document.getElementById('lost-item-modal');
+
     if (!listContainer) return;
 
     // 모달 X 버튼 및 삭제하기 버튼
@@ -102,7 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalDeleteBtn = document.getElementById('modal-delete-btn');
 
     // X 버튼 클릭 시 상세보기 팝업 닫기
-    if (modalCloseIcon) {
+    if (modalCloseIcon && modal) {
         modalCloseIcon.addEventListener('click', () => {
             modal.classList.remove('active');
             modal.style.display = 'none';
@@ -122,22 +152,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalLocationValue = document.getElementById('modal-location-value');
     const modalStorageValue = document.getElementById('modal-storage-value');
     const modalDescValue = document.getElementById('modal-description-value');
+
     // 게시글 유형별 상세 정보 행 요소
     const modalChatroomRow = document.getElementById('modal-row-chatroom');
     const modalLocationRow = document.getElementById('modal-row-location');
     const modalStorageRow = document.getElementById('modal-row-storage');
 
     /**
-     * 게시글 상세 정보 모달 열기 및 상태(State) 데이터 바인딩 함수
+     * 게시글 상세 정보 모달 열기 및 상태 데이터 바인딩 함수
      * @param {Object} item - 선택된 분실물 게시글 객체
      */
     function openItemDetailModal(item) {
         if (!item || !modal) return;
+
         selectedItem = item;
 
         const isReport = item.type === 'report';
 
-        // 게시글 유형에 따라 상세 정보 항목 표시 여부 구분
         // 게시글 유형에 따라 상세 정보 항목 표시 여부 구분
         if (isReport) {
             // 제보형: 단톡방, 보관 위치 표시
@@ -157,15 +188,16 @@ document.addEventListener('DOMContentLoaded', () => {
             modalBadge.className = `badge ${isReport ? 'badge-report' : 'badge-found'}`;
         }
 
-        // 2. 제목 (물건 이름) 바인딩
+        // 2. 제목(물건 이름) 바인딩
         if (modalName) {
             modalName.textContent = item.item_name || '';
         }
 
-        // 3. 일시 바인딩 (유형에 따라 라벨 구분)
+        // 3. 일시 바인딩
         if (modalDatetimeLabel) {
             modalDatetimeLabel.textContent = isReport ? '안내 일시' : '습득 일시';
         }
+
         if (modalDatetimeValue) {
             modalDatetimeValue.textContent = `${item.date || ''} ${item.time || ''}`.trim();
         }
@@ -174,9 +206,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (modalChatroomValue) {
             modalChatroomValue.textContent = item.chat_room_name || '-';
         }
+
         if (modalLocationValue) {
             modalLocationValue.textContent = item.found_location || '-';
         }
+
         if (modalStorageValue) {
             modalStorageValue.textContent = item.storage_location || '-';
         }
@@ -186,7 +220,7 @@ document.addEventListener('DOMContentLoaded', () => {
             modalDescValue.textContent = item.description || '등록된 상세 설명이 없습니다.';
         }
 
-        // 선택된 게시글 메타 정보 속성 기록 (식별용)
+        // 선택된 게시글 메타 정보 속성 기록
         modal.dataset.id = item.id;
         modal.dataset.type = item.type;
 
@@ -199,6 +233,25 @@ document.addEventListener('DOMContentLoaded', () => {
     // 카드 렌더링 함수
     function renderCards(items) {
         listContainer.innerHTML = '';
+
+        // 등록된 게시글이 없는 경우 빈 목록 화면 표시
+        if (!items || items.length === 0) {
+            listContainer.hidden = true;
+
+            if (emptyState) {
+                emptyState.hidden = false;
+            }
+
+            return;
+        }
+
+        // 게시글이 존재하는 경우 카드 목록 표시
+        listContainer.hidden = false;
+
+        if (emptyState) {
+            emptyState.hidden = true;
+        }
+
         items.forEach(item => {
             const card = document.createElement('div');
             card.className = 'lost-card';
@@ -209,6 +262,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const badgeText = isReport ? '제보형' : '습득형';
             const badgeClass = isReport ? 'badge-report' : 'badge-found';
             const datePrefix = isReport ? '안내' : '습득';
+
             const subLocation = isReport
                 ? (item.chat_room_name || '')
                 : (item.found_location || item.storage_location || '');
@@ -217,9 +271,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="card-badge-wrap">
                     <span class="badge ${badgeClass}">${badgeText}</span>
                 </div>
+
                 <h3 class="card-title">${item.item_name}</h3>
                 <p class="card-desc">${item.description || ''}</p>
-                
+
                 <div class="card-divider"></div>
 
                 <div class="card-info">
@@ -228,12 +283,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             `;
 
-            // 카드 클릭 시 선택된 게시글 상태(State) 바인딩 및 상세 정보 모달 오픈
+            // 카드 클릭 시 선택된 게시글 상세 정보 모달 오픈
             card.addEventListener('click', () => {
                 openItemDetailModal(item);
             });
 
-            // 키보드 엔터/스페이스바로도 상세 정보 모달 오픈 가능하도록 처리
+            // 키보드 엔터/스페이스바로도 상세 정보 모달 오픈
             card.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
@@ -248,31 +303,55 @@ document.addEventListener('DOMContentLoaded', () => {
     // 정렬 함수 (최근순 / 과거순)
     function sortBy(order) {
         if (order === 'recent') {
-            sortRecent.classList.add('active');
-            sortOldest.classList.remove('active');
-            currentItems.sort((a, b) => (b.date + b.time).localeCompare(a.date + a.time));
+            if (sortRecent) sortRecent.classList.add('active');
+            if (sortOldest) sortOldest.classList.remove('active');
+
+            currentItems.sort((a, b) =>
+                (b.date + b.time).localeCompare(a.date + a.time)
+            );
         } else {
-            sortOldest.classList.add('active');
-            sortRecent.classList.remove('active');
-            currentItems.sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time));
+            if (sortOldest) sortOldest.classList.add('active');
+            if (sortRecent) sortRecent.classList.remove('active');
+
+            currentItems.sort((a, b) =>
+                (a.date + a.time).localeCompare(b.date + b.time)
+            );
         }
+
         renderCards(currentItems);
     }
 
-    if (sortRecent) sortRecent.addEventListener('click', () => sortBy('recent'));
-    if (sortOldest) sortOldest.addEventListener('click', () => sortBy('oldest'));
+    // 정렬 버튼 이벤트
+    if (sortRecent) {
+        sortRecent.addEventListener('click', () => sortBy('recent'));
+    }
+
+    if (sortOldest) {
+        sortOldest.addEventListener('click', () => sortBy('oldest'));
+    }
 
     // 목록 데이터 로딩 함수
     function loadItems() {
         fetch('/api/items')
-            .then(response => response.json())
-            .then(items => {
-                currentItems = items;
-                if (countBadge) {
-                    countBadge.textContent = items.length;
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('분실물 목록을 불러오지 못했습니다.');
                 }
-                updateStatsUI(countItemsByType(items));
+
+                return response.json();
+            })
+            .then(items => {
+                currentItems = Array.isArray(items) ? items : [];
+
+                if (countBadge) {
+                    countBadge.textContent = currentItems.length;
+                }
+
+                updateStatsUI(countItemsByType(currentItems));
                 renderCards(currentItems);
+            })
+            .catch(err => {
+                console.error('분실물 목록 조회 오류:', err);
             });
     }
 
@@ -281,10 +360,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 초기 상단 통계 수치 로드
     fetchItemStats()
-        .then(stats => updateStatsUI(stats))
-        .catch(err => console.error('통계 데이터 연동 오류:', err));
+        .then(stats => {
+            updateStatsUI(stats);
+        })
+        .catch(err => {
+            console.error('통계 데이터 연동 오류:', err);
+        });
 
-    // DB 변경 이벤트 감지 Realtime 리스너 시작 (새 글 등록/삭제 시 통계 및 목록 실시간 자동 갱신)
+    // DB 변경 이벤트 감지 리스너 시작
     initRealtimeStatsListener(() => {
         loadItems();
     }, 3000);

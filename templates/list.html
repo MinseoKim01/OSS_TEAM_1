@@ -16,6 +16,26 @@
     <div id="lost-items-list" class="cards-grid"></div>
 </section>
 
+<!-- 빈 목록 안내 화면 -->
+<div id="empty-state" class="empty-state" hidden>
+    <div class="empty-state-icon">
+        <!-- 돋보기 아이콘 -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="7"></circle>
+            <line x1="16" y1="16" x2="21" y2="21"></line>
+        </svg>
+    </div>
+
+    <p class="empty-state-message">
+        아직 등록된 분실물이 없어요
+    </p>
+
+    <a href="/register" class="empty-state-button">
+        첫 분실물 등록하기
+    </a>
+</div>
+
 <!-- 분실물 상세 정보 모달 팝업 UI 레이아웃 -->
 <div id="lost-item-modal" class="modal-overlay" style="display: none;" aria-hidden="true" role="dialog"
     aria-modal="true" aria-labelledby="modal-item-name">
