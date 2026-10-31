@@ -122,6 +122,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalLocationValue = document.getElementById('modal-location-value');
     const modalStorageValue = document.getElementById('modal-storage-value');
     const modalDescValue = document.getElementById('modal-description-value');
+    // 게시글 유형별 상세 정보 행 요소
+    const modalChatroomRow = document.getElementById('modal-row-chatroom');
+    const modalLocationRow = document.getElementById('modal-row-location');
+    const modalStorageRow = document.getElementById('modal-row-storage');
 
     /**
      * 게시글 상세 정보 모달 열기 및 상태(State) 데이터 바인딩 함수
@@ -132,6 +136,20 @@ document.addEventListener('DOMContentLoaded', () => {
         selectedItem = item;
 
         const isReport = item.type === 'report';
+
+        // 게시글 유형에 따라 상세 정보 항목 표시 여부 구분
+        // 게시글 유형에 따라 상세 정보 항목 표시 여부 구분
+        if (isReport) {
+            // 제보형: 단톡방, 보관 위치 표시
+            if (modalChatroomRow) modalChatroomRow.style.display = 'flex';
+            if (modalLocationRow) modalLocationRow.style.display = 'none';
+            if (modalStorageRow) modalStorageRow.style.display = 'flex';
+        } else {
+            // 습득형: 습득 장소, 보관 위치 표시
+            if (modalChatroomRow) modalChatroomRow.style.display = 'none';
+            if (modalLocationRow) modalLocationRow.style.display = 'flex';
+            if (modalStorageRow) modalStorageRow.style.display = 'flex';
+        }
 
         // 1. 유형 배지 바인딩
         if (modalBadge) {
