@@ -123,7 +123,27 @@ document.addEventListener('DOMContentLoaded', () => {
     // 빈 목록 안내 화면
     const emptyState = document.getElementById('empty-state');
 
+    // 오류 안내 Toast
+    const toast = document.getElementById('toast');
+    const toastMessage = document.getElementById('toast-message');
+
     const countBadge = document.getElementById('items-count');
+
+    // 오류 메시지를 Toast로 표시
+    function showToast(message) {
+        if (!toast || !toastMessage) {
+            alert(message);
+            return;
+        }
+
+        toastMessage.textContent = message;
+        toast.classList.add('show');
+
+        setTimeout(() => {
+            toast.classList.remove('show');
+        }, 3000);
+    }
+
     const sortRecent = document.getElementById('sort-recent');
     const sortOldest = document.getElementById('sort-oldest');
     const modal = document.getElementById('lost-item-modal');
@@ -349,7 +369,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // 목록 데이터 로딩 함수
-    // 목록 데이터 로딩 함수
     function loadItems() {
         // 데이터 조회 시작
         setLoading(true);
@@ -379,6 +398,10 @@ document.addEventListener('DOMContentLoaded', () => {
             })
             .catch(err => {
                 console.error('분실물 목록 조회 오류:', err);
+
+                showToast(
+                    '분실물 목록을 불러오지 못했습니다. 잠시 후 다시 시도해주세요.'
+                );
             })
             .finally(() => {
                 // 조회 성공 또는 실패와 관계없이 로딩 화면 종료
@@ -396,6 +419,10 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .catch(err => {
             console.error('통계 데이터 연동 오류:', err);
+
+            showToast(
+                '통계 데이터를 불러오지 못했습니다.'
+            );
         });
 
     // DB 변경 이벤트 감지 리스너 시작
