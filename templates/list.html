@@ -15,3 +15,60 @@
     <!-- 분실물 카드 목록 그리드 -->
     <div id="lost-items-list" class="cards-grid"></div>
 </section>
+
+<!-- 분실물 상세 정보 모달 팝업 UI 레이아웃 -->
+<div id="lost-item-modal" class="modal-overlay" style="display: none;" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modal-item-name">
+    <div class="modal-container">
+        <!-- 모달 헤더: 유형 배지, 물건 이름, 닫기(X) 버튼 -->
+        <div class="modal-header">
+            <div class="modal-header-top">
+                <span id="modal-item-badge" class="badge"></span>
+                <button type="button" id="modal-close-icon" class="modal-close-btn" aria-label="닫기">&times;</button>
+            </div>
+            <h3 id="modal-item-name" class="modal-title"></h3>
+        </div>
+
+        <div class="modal-divider"></div>
+
+        <!-- 모달 본문: 게시글 상세 정보 (일시, 장소/단톡방, 특징 등) -->
+        <div class="modal-body">
+            <!-- 일시 항목 (안내 일시 / 습득 일시) -->
+            <div class="modal-info-row" id="modal-row-datetime">
+                <span class="modal-info-label" id="modal-datetime-label">일시</span>
+                <span class="modal-info-value" id="modal-datetime-value"></span>
+            </div>
+
+            <!-- 단톡방 항목 (제보형 게시글) -->
+            <div class="modal-info-row" id="modal-row-chatroom">
+                <span class="modal-info-label">단톡방</span>
+                <span class="modal-info-value" id="modal-chatroom-value"></span>
+            </div>
+
+            <!-- 습득 장소 항목 (습득형 게시글) -->
+            <div class="modal-info-row" id="modal-row-location">
+                <span class="modal-info-label">습득 장소</span>
+                <span class="modal-info-value" id="modal-location-value"></span>
+            </div>
+
+            <!-- 보관 위치 항목 (습득형 게시글) -->
+            <div class="modal-info-row" id="modal-row-storage">
+                <span class="modal-info-label">보관 위치</span>
+                <span class="modal-info-value" id="modal-storage-value"></span>
+            </div>
+
+            <!-- 특징 및 세부 설명 항목 -->
+            <div class="modal-desc-section" id="modal-row-desc">
+                <span class="modal-info-label">특징 및 상세 설명</span>
+                <div class="modal-desc-box" id="modal-description-value"></div>
+            </div>
+        </div>
+
+        <div class="modal-divider"></div>
+
+        <!-- 모달 푸터: 삭제하기 및 닫기 버튼 -->
+        <div class="modal-footer">
+            <button type="button" id="modal-delete-btn" class="modal-btn modal-btn-delete">삭제하기</button>
+            <button type="button" id="modal-close-btn" class="modal-btn modal-btn-secondary">닫기</button>
+        </div>
+    </div>
+</div>
