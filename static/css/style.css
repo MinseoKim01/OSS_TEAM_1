@@ -70,3 +70,177 @@ body {
     display: flex;
     gap: 20px;
 }
+
+/* =========================================
+   상단 통계 요약 카드 3종
+   ========================================= */
+
+.stats-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 36px;
+}
+
+.stat-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 20px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.stat-label-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.stat-label {
+    font-size: 15px;
+    color: #475569;
+    font-weight: 500;
+}
+
+.stat-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.dot-blue {
+    background-color: #4f46e5;
+}
+
+.dot-green {
+    background-color: #059669;
+}
+
+.stat-value-wrap {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+}
+
+.stat-number {
+    font-size: 26px;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.stat-unit {
+    font-size: 14px;
+    color: #64748b;
+}
+
+@media (max-width: 768px) {
+    .stats-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* =========================================
+   분실물 목록 및 카드 UI
+   ========================================= */
+
+.lost-items-section {
+    margin-top: 48px;
+}
+
+.lost-items-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.title-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.title-wrap h2 {
+    font-size: 20px;
+}
+
+.count-badge {
+    font-size: 20px;
+    font-weight: 700;
+    color: #2563eb;
+}
+
+/* 정렬 옵션 */
+.sort-options {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: #94a3b8;
+    user-select: none;
+}
+
+.sort-opt {
+    cursor: pointer;
+    color: #94a3b8;
+}
+
+.sort-opt.active {
+    font-weight: 700;
+    color: #0f172a;
+}
+
+/* 카드 그리드 및 카드 */
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 24px;
+}
+
+.lost-card {
+    background: #ffffff;
+    border: 1px solid #f1f5f9;
+    border-radius: 16px;
+    padding: 24px;
+}
+
+/* 배지 */
+.badge {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 6px;
+    margin-bottom: 12px;
+}
+
+.badge-report {
+    background-color: #eff6ff;
+    color: #2563eb;
+}
+
+.badge-found {
+    background-color: #f0fdf4;
+    color: #16a34a;
+}
+
+/* 카드 본문 */
+.card-title {
+    font-size: 18px;
+    margin-bottom: 8px;
+}
+
+.card-desc,
+.card-info {
+    font-size: 14px;
+    color: #64748b;
+}
+
+.card-divider {
+    border-top: 1px solid #f1f5f9;
+    margin: 20px 0;
+}
+

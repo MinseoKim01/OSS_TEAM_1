@@ -1,15 +1,70 @@
 # routes/main.py
-from flask import Blueprint, render_template
+from datetime import datetime
+from flask import Blueprint, jsonify, render_template
+from models import FoundItem, ReportItem
 
 # 메인 화면용 Blueprint 객체
 main_bp = Blueprint('main', __name__)
 
-# 여기에 /주소와 처리 함수를 연결
-# 브라우저의 /요청 -> main_bp -> index() -> templates/index.html로 연결
+
 @main_bp.route('/')
 def index():
-    
-    # 게시글 조회 코드 추가 예정
-    
     return render_template('index.html')
 
+
+# 분실물 목록 API
+@main_bp.route('/api/items')
+def get_items():
+    items = []
+
+    # 단톡방 제보 게시글 조회 (type: report)
+    for item in ReportItem.query.all():
+        dt = datetime.combine(item.notice_date, item.notice_time)
+        items.append({
+            'id': item.id,
+            'type': 'report',
+            'type_label': '제보',
+            'item_name': item.item_name,
+            'date': item.notice_date.strftime('%Y-%m-%d'),
+            'time': item.notice_time.strftime('%H:%M'),
+            'datetime': dt,
+            'chat_room_name': item.chat_room_name,
+            'description': item.description
+        })
+
+    # 직접 습득 게시글 조회 (type: found)
+    for item in FoundItem.query.all():
+        dt = datetime.combine(item.found_date, item.found_time)
+        items.append({
+            'id': item.id,
+            'type': 'found',
+            'type_label': '습득',
+            'item_name': item.item_name,
+            'date': item.found_date.strftime('%Y-%m-%d'),
+            'time': item.found_time.strftime('%H:%M'),
+            'datetime': dt,
+            'found_location': item.found_location,
+            'storage_location': item.storage_location,
+            'description': item.description
+        })
+
+    # 최신 일시순 정렬 
+    items.sort(key=lambda x: x['datetime'], reverse=True)
+    for item in items:
+        del item['datetime']
+
+    return jsonify(items)
+
+
+# 전체 및 유형별(type: report / found) 등록 건수 카운트(count) 집계 API
+@main_bp.route('/api/stats')
+def get_stats():
+    report_count = ReportItem.query.count()    # 단톡방 제보 건수 (report)
+    found_count = FoundItem.query.count()     # 직접 습득 건수 (found)
+    total_count = report_count + found_count  # 전체 등록 건수 (total)
+
+    return jsonify({
+        'total': total_count,
+        'report': report_count,
+        'found': found_count
+    })
