@@ -205,6 +205,7 @@ body {
     border: 1px solid #f1f5f9;
     border-radius: 16px;
     padding: 24px;
+    cursor: pointer;
 }
 
 /* 배지 */
@@ -243,6 +244,7 @@ body {
     border-top: 1px solid #f1f5f9;
     margin: 20px 0;
 }
+
 /* =========================================
    분실물 상세 정보 모달 UI (list.html)
    - 분실물 목록 카드 선택 시 표시되는 상세 정보 팝업 레이아웃
@@ -281,7 +283,23 @@ body {
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
 }
 
-/* 모달 헤더 */
+/* 모달 오른쪽 상단 X 닫기 버튼 */
+.modal-close-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    color: #64748b;
+    font-size: 32px;
+    font-weight: 400;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.modal-close-btn:hover {
+    color: #0f172a;
+}
+
+/* 모달 헤더: 배지와 삭제하기 버튼 */
 .modal-header-top {
     display: flex;
     justify-content: space-between;
@@ -289,19 +307,8 @@ body {
     margin-bottom: 12px;
 }
 
-.modal-close-btn {
-    background: none;
-    border: none;
-    font-size: 24px;
-    line-height: 1;
-    color: #94a3b8;
-    cursor: pointer;
-    padding: 4px;
-    border-radius: 4px;
-}
-
-.modal-close-btn:hover {
-    color: #0f172a;
+.modal-header-top .badge {
+    margin-bottom: 0;
 }
 
 .modal-title {
@@ -368,9 +375,8 @@ body {
 /* 모달 하단 푸터 및 버튼 */
 .modal-footer {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
-    gap: 10px;
 }
 
 .modal-btn {
@@ -389,16 +395,6 @@ body {
 
 .modal-btn-secondary:hover {
     background-color: #e2e8f0;
-}
-
-.modal-btn-delete {
-    background-color: #fef2f2;
-    border: 1px solid #fecaca;
-    color: #dc2626;
-}
-
-.modal-btn-delete:hover {
-    background-color: #fee2e2;
 }
 
 @media (max-width: 768px) {

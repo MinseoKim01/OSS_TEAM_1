@@ -94,9 +94,76 @@ document.addEventListener('DOMContentLoaded', () => {
     const countBadge = document.getElementById('items-count');
     const sortRecent = document.getElementById('sort-recent');
     const sortOldest = document.getElementById('sort-oldest');
+    const modal = document.getElementById('lost-item-modal');
     if (!listContainer) return;
 
     let currentItems = [];
+    let selectedItem = null;
+
+    // 모달 내부 상세 정보 필드 엘리먼트
+    const modalBadge = document.getElementById('modal-item-badge');
+    const modalName = document.getElementById('modal-item-name');
+    const modalDatetimeLabel = document.getElementById('modal-datetime-label');
+    const modalDatetimeValue = document.getElementById('modal-datetime-value');
+    const modalChatroomValue = document.getElementById('modal-chatroom-value');
+    const modalLocationValue = document.getElementById('modal-location-value');
+    const modalStorageValue = document.getElementById('modal-storage-value');
+    const modalDescValue = document.getElementById('modal-description-value');
+
+    /**
+     * 게시글 상세 정보 모달 열기 및 상태(State) 데이터 바인딩 함수
+     * @param {Object} item - 선택된 분실물 게시글 객체
+     */
+    function openItemDetailModal(item) {
+        if (!item || !modal) return;
+        selectedItem = item;
+
+        const isReport = item.type === 'report';
+
+        // 1. 유형 배지 바인딩
+        if (modalBadge) {
+            modalBadge.textContent = isReport ? '제보형' : '습득형';
+            modalBadge.className = `badge ${isReport ? 'badge-report' : 'badge-found'}`;
+        }
+
+        // 2. 제목 (물건 이름) 바인딩
+        if (modalName) {
+            modalName.textContent = item.item_name || '';
+        }
+
+        // 3. 일시 바인딩 (유형에 따라 라벨 구분)
+        if (modalDatetimeLabel) {
+            modalDatetimeLabel.textContent = isReport ? '안내 일시' : '습득 일시';
+        }
+        if (modalDatetimeValue) {
+            modalDatetimeValue.textContent = `${item.date || ''} ${item.time || ''}`.trim();
+        }
+
+        // 4. 장소 및 단톡방 바인딩
+        if (modalChatroomValue) {
+            modalChatroomValue.textContent = item.chat_room_name || '-';
+        }
+        if (modalLocationValue) {
+            modalLocationValue.textContent = item.found_location || '-';
+        }
+        if (modalStorageValue) {
+            modalStorageValue.textContent = item.storage_location || '-';
+        }
+
+        // 5. 특징 및 상세 설명 바인딩
+        if (modalDescValue) {
+            modalDescValue.textContent = item.description || '등록된 상세 설명이 없습니다.';
+        }
+
+        // 선택된 게시글 메타 정보 속성 기록 (식별용)
+        modal.dataset.id = item.id;
+        modal.dataset.type = item.type;
+
+        // 모달 표시
+        modal.classList.add('active');
+        modal.style.display = 'flex';
+        modal.setAttribute('aria-hidden', 'false');
+    }
 
     // 카드 렌더링 함수
     function renderCards(items) {
@@ -104,6 +171,8 @@ document.addEventListener('DOMContentLoaded', () => {
         items.forEach(item => {
             const card = document.createElement('div');
             card.className = 'lost-card';
+            card.setAttribute('role', 'button');
+            card.setAttribute('tabindex', '0');
 
             const isReport = item.type === 'report';
             const badgeText = isReport ? '제보형' : '습득형';
@@ -127,6 +196,19 @@ document.addEventListener('DOMContentLoaded', () => {
                     ${subLocation ? `<div class="card-location">${subLocation}</div>` : ''}
                 </div>
             `;
+
+            // 카드 클릭 시 선택된 게시글 상태(State) 바인딩 및 상세 정보 모달 오픈
+            card.addEventListener('click', () => {
+                openItemDetailModal(item);
+            });
+
+            // 키보드 엔터/스페이스바로도 상세 정보 모달 오픈 가능하도록 처리
+            card.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    openItemDetailModal(item);
+                }
+            });
 
             listContainer.appendChild(card);
         });
