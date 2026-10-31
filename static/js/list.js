@@ -117,6 +117,9 @@ function initRealtimeStatsListener(onCountChanged, intervalMs = 3000) {
 document.addEventListener('DOMContentLoaded', () => {
     const listContainer = document.getElementById('lost-items-list');
 
+    // 데이터 조회 로딩 화면
+    const loadingState = document.getElementById('loading-state');
+
     // 빈 목록 안내 화면
     const emptyState = document.getElementById('empty-state');
 
@@ -230,6 +233,21 @@ document.addEventListener('DOMContentLoaded', () => {
         modal.setAttribute('aria-hidden', 'false');
     }
 
+    // 데이터 조회 상태에 따라 로딩 화면 표시 및 숨김
+    function setLoading(isLoading) {
+        if (loadingState) {
+            loadingState.hidden = !isLoading;
+        }
+
+        if (isLoading) {
+            listContainer.hidden = true;
+
+            if (emptyState) {
+                emptyState.hidden = true;
+            }
+        }
+    }
+
     // 카드 렌더링 함수
     function renderCards(items) {
         listContainer.innerHTML = '';
@@ -331,7 +349,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // 목록 데이터 로딩 함수
+    // 목록 데이터 로딩 함수
     function loadItems() {
+        // 데이터 조회 시작
+        setLoading(true);
+
         fetch('/api/items')
             .then(response => {
                 if (!response.ok) {
@@ -341,17 +363,26 @@ document.addEventListener('DOMContentLoaded', () => {
                 return response.json();
             })
             .then(items => {
+                // 조회 데이터 저장
                 currentItems = Array.isArray(items) ? items : [];
 
+                // 등록 건수 업데이트
                 if (countBadge) {
                     countBadge.textContent = currentItems.length;
                 }
 
+                // 통계 카드 업데이트
                 updateStatsUI(countItemsByType(currentItems));
+
+                // 조회 결과에 따라 카드 또는 빈 목록 화면 표시
                 renderCards(currentItems);
             })
             .catch(err => {
                 console.error('분실물 목록 조회 오류:', err);
+            })
+            .finally(() => {
+                // 조회 성공 또는 실패와 관계없이 로딩 화면 종료
+                setLoading(false);
             });
     }
 
