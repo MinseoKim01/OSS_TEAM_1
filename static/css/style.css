@@ -397,6 +397,17 @@ body {
     background-color: #e2e8f0;
 }
 
+/* 모달 삭제하기 버튼: 상세보기 팝업 오른쪽 하단 */
+.modal-btn-delete {
+    background-color: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #dc2626;
+}
+
+.modal-btn-delete:hover {
+    background-color: #fee2e2;
+}
+
 @media (max-width: 768px) {
     .modal-container {
         padding: 20px;

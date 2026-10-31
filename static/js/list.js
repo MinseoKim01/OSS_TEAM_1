@@ -97,6 +97,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const modal = document.getElementById('lost-item-modal');
     if (!listContainer) return;
 
+    // 모달 X 버튼 및 삭제하기 버튼
+    const modalCloseIcon = document.getElementById('modal-close-icon');
+    const modalDeleteBtn = document.getElementById('modal-delete-btn');
+
+    // X 버튼 클릭 시 상세보기 팝업 닫기
+    if (modalCloseIcon) {
+        modalCloseIcon.addEventListener('click', () => {
+            modal.classList.remove('active');
+            modal.style.display = 'none';
+            modal.setAttribute('aria-hidden', 'true');
+        });
+    }
+
     let currentItems = [];
     let selectedItem = null;
 
