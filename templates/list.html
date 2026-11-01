@@ -1,7 +1,17 @@
 <!--조회 기능 부분 템플릿-->
-<br><br>
+<section class="lost-items-section">
+    <div class="lost-items-header">
+        <div class="title-wrap">
+            <h2>분실물 목록</h2>
+            <span id="items-count" class="count-badge">0</span>
+        </div>
+        <div class="sort-options">
+            <span id="sort-recent" class="sort-opt active">최근 등록순</span>
+            <span class="sort-divider">·</span>
+            <span id="sort-oldest" class="sort-opt">과거 등록순</span>
+        </div>
+    </div>
 
-<div class="container">
-    <p>분실물 list</p>
-    <!--클릭 시 상세조회 (삭제 버튼 포함)-->
-</div>
+    <!-- 분실물 카드 목록 그리드 -->
+    <div id="lost-items-list" class="cards-grid"></div>
+</section>
