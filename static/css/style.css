@@ -57,6 +57,40 @@ body {
     display: block;
 }
 
+/* search 페이지 스타일 지정 */
+.search-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 16px;
+}
+
+.search-controls .search-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.search-controls label {
+    font-size: 18px;
+}
+
+.search-controls input,
+.search-controls button {
+    height: 44px;
+    padding: 0 12px;
+    font-size: 16px;
+}
+
+.search-controls input {
+    width: 320px;
+    max-width: 100%;
+}
+
+.search-controls input[type="date"] {
+    width: 232px;
+}
+
 /* 푸터 */
 .footer {
     margin-top: 100px;
