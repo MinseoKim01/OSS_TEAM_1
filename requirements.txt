@@ -16,3 +16,6 @@ alembic==1.20.0
 
 # 로컬 .env 로딩
 python-dotenv==1.2.4
+
+# 비밀번호 단방향 해싱
+bcrypt==5.0.0
