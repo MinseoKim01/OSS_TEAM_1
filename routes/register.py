@@ -112,20 +112,6 @@ def register():
                 # 저장 성공 후 목록으로 이동
                 return redirect(url_for('main.index'), code=303)
 
-        # 해싱 처리 이후에는 평문 비밀번호를 더 사용하지 않음
-        del password
-
-        # 입력 검증과 해싱이 모두 성공한 경우에만 저장
-        if not errors:
-            try:
-                save_item(values, password_hash)
-            except SQLAlchemyError:
-                # 롤백은 storage.py에서 수행하고 화면에는 일반 안내만 표시
-                storage_failed = True
-                errors.append(
-                    '저장 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.'
-                )
-
     # 입력값과 검사 결과를 HTML에 전달
     # 저장소 오류는 HTTP 500, 잘못된 입력은 HTTP 400으로 구분
     if storage_failed:
