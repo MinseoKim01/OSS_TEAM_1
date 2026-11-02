@@ -4,7 +4,14 @@ from datetime import date, time
 import re
 import bcrypt
 
-from flask import Blueprint, render_template, request
+from sqlalchemy.exc import SQLAlchemyError
+
+from storage import save_item
+
+from flask import (
+    Blueprint, current_app, redirect,
+    render_template, request, url_for,
+)
 
 # 등록 화면용 Blueprint 객체
 register_bp = Blueprint('register', __name__)
@@ -15,9 +22,9 @@ register_bp = Blueprint('register', __name__)
 def register():
     values = {'type': 'report'}
     errors = []
-    validated = False
-    # 후속 DB 저장에 사용할 해시값. 평문 대신 이 값만 저장한다.
+    # DB에 저장할 bcrypt 해시값
     password_hash = None
+    storage_failed = False
 
     if request.method == 'POST':
         # HTML input의 name을 키로 사용해 제출값을 사전으로 변환
@@ -57,7 +64,7 @@ def register():
                 except ValueError:
                     errors.append(f'{label} 형식이 올바르지 않습니다.')
 
-        # 비밀번호는 꺼낸 뒤 values에서 제거해 화면에 다시 전달하지 않음
+        # 비밀번호를 화면에 다시 전달하지 않도록 values에서 제거
         password = values.pop('password', '')
 
         if not password:
@@ -67,7 +74,7 @@ def register():
         elif len(password) != 4:
             errors.append('삭제 비밀번호는 정확히 4자리로 입력해 주세요.')
 
-        # 모든 입력값이 정상일 때만 비밀번호를 해싱
+        # 모든 입력값이 정상일 때 비밀번호 해싱
         if not errors:
             try:
                 password_hash = bcrypt.hashpw(
@@ -79,19 +86,43 @@ def register():
                     '비밀번호 처리 중 오류가 발생했습니다. 다시 시도해 주세요.'
                 )
 
-        # 해싱 처리 이후에는 평문 비밀번호를 더 사용하지 않음
         del password
 
-        # 해싱 오류가 있어도 성공 처리를 하지 않음
-        validated = not errors
+        # 검증과 해싱이 성공한 경우에만 해시값을 저장
+        if not errors:
+            try:
+                save_item(values, password_hash)
+            except SQLAlchemyError as error:
+                detail = getattr(
+                    getattr(error, 'orig', None), 'diag', None
+                )
 
-        # shortcut: DB 저장 미연결, 저장 구현 시 password_hash만 저장.
+                current_app.logger.error(
+                    '저장 오류: %s / 테이블: %s / 컬럼: %s',
+                    type(error).__name__,
+                    getattr(detail, 'table_name', None),
+                    getattr(detail, 'column_name', None),
+                )
+
+                storage_failed = True
+                errors.append(
+                    '저장 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.'
+                )
+            else:
+                # 저장 성공 후 목록으로 이동
+                return redirect(url_for('main.index'), code=303)
 
     # 입력값과 검사 결과를 HTML에 전달
-    # 오류가 있으면 HTTP 400, 정상 화면이나 검증 성공이면 HTTP 200 응답
+    # 저장소 오류는 HTTP 500, 잘못된 입력은 HTTP 400으로 구분
+    if storage_failed:
+        status_code = 500
+    elif errors:
+        status_code = 400
+    else:
+        status_code = 200
+
     return render_template(
         'register.html',
         values=values,
         errors=errors,
-        validated=validated,
-    ), 400 if errors else 200
+    ), status_code
