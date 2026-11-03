@@ -13,3 +13,17 @@ document.getElementById('modal-delete-btn').addEventListener('click', () => {
 
     deleteDialog.showModal();
 });
+
+// 비밀번호 비교 결과를 Toast 임시 메시지로 표시
+const passwordResult = new URLSearchParams(window.location.search).get('password');
+
+if (passwordResult === 'match' || passwordResult === 'mismatch') {
+    const toast = document.getElementById('toast');
+    document.getElementById('toast-message').textContent =
+        passwordResult === 'match' ? '비밀번호가 같습니다.' : '비밀번호가 틀립니다.';
+    toast.classList.add('show');
+
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 3000);
+}

@@ -28,4 +28,5 @@ def delete():
 
     del password
 
-    return redirect(url_for('main.index'), code=303)
+    # 비교 결과를 메인 화면에 전달해 임시 메시지로 표시
+    return redirect(url_for('main.index', password='match' if is_match else 'mismatch'), code=303)
