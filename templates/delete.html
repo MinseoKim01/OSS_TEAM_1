@@ -6,11 +6,11 @@
         <p class="delete-dialog-hint">등록할 때 설정한 숫자 4자리 비밀번호를 입력해 주세요.</p>
 
         <label for="delete-password">삭제 비밀번호</label>
-        <input id="delete-password" type="password" maxlength="4" placeholder="숫자 4자리">
+        <input id="delete-password" name="password" type="password" maxlength="4" placeholder="숫자 4자리">
 
         <div class="delete-dialog-buttons">
             <button type="submit" value="cancel" class="delete-cancel-button">취소</button>
-            <button type="submit" value="confirm" class="delete-confirm-button">삭제 확인</button>
+            <button type="submit" value="confirm" class="delete-confirm-button" formmethod="post" formaction="{{ url_for('delete.delete') }}">삭제 확인</button>
         </div>
     </form>
 </dialog>

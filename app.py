@@ -8,6 +8,7 @@ from extensions import db, migrate
 from routes.main import main_bp
 from routes.register import register_bp
 from routes.search import search_bp
+from routes.delete import delete_bp
 
 # 개인 환경 설정 (.env) 로딩
 load_dotenv()
@@ -33,6 +34,7 @@ migrate.init_app(app, db)
 app.register_blueprint(main_bp)
 app.register_blueprint(register_bp)
 app.register_blueprint(search_bp)
+app.register_blueprint(delete_bp)
 
 # 직접 실행 시 서버 시작
 if __name__ == "__main__":
