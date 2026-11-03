@@ -138,7 +138,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const isReport = item.type === 'report';
 
         // 게시글 유형에 따라 상세 정보 항목 표시 여부 구분
-        // 게시글 유형에 따라 상세 정보 항목 표시 여부 구분
         if (isReport) {
             // 제보형: 단톡방, 보관 위치 표시
             if (modalChatroomRow) modalChatroomRow.style.display = 'flex';
