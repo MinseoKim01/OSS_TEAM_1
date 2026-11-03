@@ -1,0 +1,18 @@
+<!--삭제 dialog 확인용 임시 화면-->
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <title>삭제 dialog 테스트</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+    <button type="button" id="delete-open-button">삭제</button>
+
+    {% include "delete.html" %}
+
+    <script src="{{ url_for('static', filename='js/delete.js') }}"></script>
+</body>
+
+</html>
