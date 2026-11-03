@@ -4,7 +4,7 @@ import json
 from datetime import date, time
 from pathlib import Path
 
-from werkzeug.security import generate_password_hash
+import bcrypt
 
 from app import app
 from extensions import db
@@ -20,14 +20,18 @@ if __name__ == '__main__':
             item['notice_date'] = date.fromisoformat(item['notice_date'])
             item['notice_time'] = time.fromisoformat(item['notice_time'])
             db.session.add(ReportItem(
-                **item, password_hash=generate_password_hash('1234')
+                **item, password_hash=bcrypt.hashpw(
+                    '1234'.encode('utf-8'), bcrypt.gensalt()
+                ).decode('utf-8')
             ))
 
         for item in data['found_items']:
             item['found_date'] = date.fromisoformat(item['found_date'])
             item['found_time'] = time.fromisoformat(item['found_time'])
             db.session.add(FoundItem(
-                **item, password_hash=generate_password_hash('1234')
+                **item, password_hash=bcrypt.hashpw(
+                    '1234'.encode('utf-8'), bcrypt.gensalt()
+                ).decode('utf-8')
             ))
 
         db.session.commit()
