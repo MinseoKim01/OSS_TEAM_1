@@ -11,6 +11,10 @@ main_bp = Blueprint('main', __name__)
 def index():
     return render_template('index.html')
 
+# 카드 구현 후 삭제 예정 dialog를 확인하는 미리보기 화면
+@main_bp.route('/delete-preview')
+def delete_preview():
+    return render_template('temp.html')
 
 # 분실물 목록 API
 @main_bp.route('/api/items')
