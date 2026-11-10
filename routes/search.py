@@ -11,6 +11,11 @@ def remove_whitespace(value):
     return ''.join(value.split())
 
 
+def matches_keyword(keyword, item_name):
+    """공백을 제거한 키워드가 분실물 이름에 포함되는지 반환한다."""
+    return remove_whitespace(keyword) in remove_whitespace(item_name)
+
+
 # 여기에 /search 주소와 처리 함수를 연결
 # 브라우저의 /search요청 -> search_bp -> search() -> templates/search.html로 연결
 @search_bp.route('/search')
