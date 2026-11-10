@@ -1,6 +1,8 @@
 # routes/search.py
 
-from flask import Blueprint, render_template, request
+from datetime import date
+
+from flask import Blueprint, abort, render_template, request
 
 from models import FoundItem, ReportItem
 
@@ -23,12 +25,31 @@ def matches_keyword(keyword, item_name):
 @search_bp.route('/search')
 def search():
     keyword = request.args.get('keyword', '')
-    searched = 'keyword' in request.args
+    start_date = request.args.get('start_date', '')
+    end_date = request.args.get('end_date', '')
+    searched = any(
+        field in request.args for field in ('keyword', 'start_date', 'end_date')
+    )
     results = []
 
     if searched:
-        for model, item_type in ((ReportItem, 'report'), (FoundItem, 'found')):
-            for item in model.query.all():
+        try:
+            start_date = date.fromisoformat(start_date) if start_date else None
+            end_date = date.fromisoformat(end_date) if end_date else None
+        except ValueError:
+            abort(400, description='날짜 형식이 올바르지 않습니다.')
+
+        for model, item_type, date_field in (
+            (ReportItem, 'report', ReportItem.notice_date),
+            (FoundItem, 'found', FoundItem.found_date),
+        ):
+            query = model.query
+            if start_date is not None:
+                query = query.filter(date_field >= start_date)
+            if end_date is not None:
+                query = query.filter(date_field <= end_date)
+
+            for item in query.all():
                 if matches_keyword(keyword, item.item_name):
                     results.append((item, item_type))
 
