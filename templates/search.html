@@ -21,10 +21,10 @@
         <br><br>
         <h1>분실물 검색</h1>
         <br><br>
-        <div class="search-controls">
+        <form class="search-controls" action="{{ url_for('search.search') }}" method="get">
             <div class="search-field">
                 <label for="keyword">키워드</label>
-                <input type="text" id="keyword" placeholder="분실물 이름을 입력하세요">
+                <input type="text" id="keyword" name="keyword" value="{{ keyword }}" placeholder="분실물 이름을 입력하세요">
             </div>
             <div class="search-field">
                 <label for="start-date">시작 날짜</label>
@@ -34,8 +34,42 @@
                 <label for="end-date">종료 날짜</label>
                 <input type="date" id="end-date" name="end_date">
             </div>
-            <button type="button">검색</button>
-        </div>
+            <button type="submit">검색</button>
+        </form>
+
+        {% if searched %}
+        <section class="lost-items-section" aria-labelledby="search-results-title">
+            <div class="lost-items-header">
+                <div class="title-wrap">
+                    <h2 id="search-results-title">검색 결과</h2>
+                </div>
+            </div>
+
+            {% if results %}
+            <div class="cards-grid">
+                {% for item, item_type in results %}
+                <article class="lost-card">
+                    <span class="badge badge-{{ item_type }}">{{ '제보형' if item_type == 'report' else '습득형' }}</span>
+                    <h3 class="card-title">{{ item.item_name }}</h3>
+                    <p class="card-desc">{{ item.description }}</p>
+                    <div class="card-divider"></div>
+                    <div class="card-info">
+                        {% if item_type == 'report' %}
+                        <div>안내 · {{ item.notice_date.strftime('%Y-%m-%d') }} {{ item.notice_time.strftime('%H:%M') }}</div>
+                        <div>{{ item.chat_room_name }}</div>
+                        {% else %}
+                        <div>습득 · {{ item.found_date.strftime('%Y-%m-%d') }} {{ item.found_time.strftime('%H:%M') }}</div>
+                        <div>{{ item.found_location }}</div>
+                        {% endif %}
+                    </div>
+                </article>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p>검색 결과가 없습니다.</p>
+            {% endif %}
+        </section>
+        {% endif %}
     </main>
 </body>
 

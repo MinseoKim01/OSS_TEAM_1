@@ -1,6 +1,8 @@
 # routes/search.py
 
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, request
+
+from models import FoundItem, ReportItem
 
 # 검색 화면용 Blueprint 객체
 search_bp = Blueprint('search', __name__)
@@ -20,4 +22,19 @@ def matches_keyword(keyword, item_name):
 # 브라우저의 /search요청 -> search_bp -> search() -> templates/search.html로 연결
 @search_bp.route('/search')
 def search():
-    return render_template('search.html')
+    keyword = request.args.get('keyword', '')
+    searched = 'keyword' in request.args
+    results = []
+
+    if searched:
+        for model, item_type in ((ReportItem, 'report'), (FoundItem, 'found')):
+            for item in model.query.all():
+                if matches_keyword(keyword, item.item_name):
+                    results.append((item, item_type))
+
+    return render_template(
+        'search.html',
+        keyword=keyword,
+        searched=searched,
+        results=results,
+    )
