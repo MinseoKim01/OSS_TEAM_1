@@ -15,15 +15,25 @@ document.getElementById('modal-delete-btn').addEventListener('click', () => {
 });
 
 // 비밀번호 비교 결과를 Toast 임시 메시지로 표시
-const passwordResult = new URLSearchParams(window.location.search).get('password');
+const params = new URLSearchParams(window.location.search);
+const passwordResult = params.get('password');
 
 if (passwordResult === 'match' || passwordResult === 'mismatch') {
     const toast = document.getElementById('toast');
     document.getElementById('toast-message').textContent =
-        passwordResult === 'match' ? '비밀번호가 같습니다.' : '비밀번호가 틀립니다.';
+        passwordResult === 'match' ? '비밀번호가 같습니다.' : '비밀번호가 일치하지 않습니다.';
     toast.classList.add('show');
 
     setTimeout(() => {
         toast.classList.remove('show');
     }, 3000);
+}
+
+// 비밀번호 불일치 시 같은 게시글로 삭제 dialog를 다시 열어 비밀번호 재입력 후 재시도
+if (passwordResult === 'mismatch' && params.get('id') && params.get('type')) {
+    document.getElementById('delete-item-id').value = params.get('id');
+    document.getElementById('delete-item-type').value = params.get('type');
+    document.getElementById('delete-password').value = '';
+
+    deleteDialog.showModal();
 }
