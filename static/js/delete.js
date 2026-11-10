@@ -20,7 +20,7 @@ const passwordResult = new URLSearchParams(window.location.search).get('password
 if (passwordResult === 'match' || passwordResult === 'mismatch') {
     const toast = document.getElementById('toast');
     document.getElementById('toast-message').textContent =
-        passwordResult === 'match' ? '비밀번호가 같습니다.' : '비밀번호가 틀립니다.';
+        passwordResult === 'match' ? '비밀번호가 같습니다.' : '비밀번호가 일치하지 않습니다.';
     toast.classList.add('show');
 
     setTimeout(() => {
