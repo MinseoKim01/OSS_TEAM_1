@@ -28,5 +28,9 @@ def delete():
 
     del password
 
+    # 비밀번호 불일치 시 삭제를 중단하고 메인 화면으로 돌려보냄
+    if not is_match:
+        return redirect(url_for('main.index', password='mismatch'), code=303)
+
     # 비교 결과를 메인 화면에 전달해 임시 메시지로 표시
-    return redirect(url_for('main.index', password='match' if is_match else 'mismatch'), code=303)
+    return redirect(url_for('main.index', password='match'), code=303)
