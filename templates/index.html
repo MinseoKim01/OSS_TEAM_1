@@ -63,6 +63,9 @@
 
                 <!--index.html 안에 list.html 포함-->
                 {% include "list.html" %}
+
+                <!--index.html 안에 delete.html 포함-->
+                {% include "delete.html" %}
             </section>
 
         </div>
@@ -77,6 +80,7 @@
 
     <script src="{{ url_for('static', filename='js/list.js') }}"></script>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/delete.js') }}"></script>
 </body>
 
 </html>
