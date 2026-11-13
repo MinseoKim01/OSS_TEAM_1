@@ -55,8 +55,58 @@ for (const radio of form.querySelectorAll('input[name="type"]')) {
     radio.addEventListener('change', updateType);
 }
 
+const dateInput = form.elements.namedItem('date');
+const timeInput = form.elements.namedItem('time');
+
+function updateDateTimeLimits() {
+    const nowKst = new Date(Date.now() + 9 * 60 * 60 * 1000).toISOString();
+    const today = nowKst.slice(0, 10);
+    const currentTime = nowKst.slice(11, 16);
+
+    dateInput.max = today;
+
+    // 오늘만 시간에 상한을 둔다. 과거 날짜는 모든 시간 입력 가능.
+    if (dateInput.value === today) {
+        timeInput.max = currentTime;
+    } else {
+        timeInput.removeAttribute('max');
+    }
+}
+
+function validateDateTime() {
+    dateInput.setCustomValidity('');
+    timeInput.setCustomValidity('');
+    updateDateTimeLimits();
+
+    if (dateInput.value > dateInput.max) {
+        dateInput.value = '';
+        updateDateTimeLimits();
+        dateInput.setCustomValidity('미래 날짜는 선택할 수 없습니다.');
+        return dateInput.reportValidity();
+    }
+
+    if (timeInput.max && timeInput.value > timeInput.max) {
+        timeInput.value = '';
+        timeInput.setCustomValidity('현재 시각보다 늦은 시간은 선택할 수 없습니다.');
+        return timeInput.reportValidity();
+    }
+
+    return true;
+}
+
+for (const input of [dateInput, timeInput]) {
+    input.addEventListener('focus', updateDateTimeLimits);
+    input.addEventListener('change', validateDateTime);
+}
+
+updateDateTimeLimits();
+
 // 브라우저 기본 검증을 통과한 뒤 공백만 입력한 값 추가 검사
 form.addEventListener('submit', (event) => {
+        if (!validateDateTime()) {
+        event.preventDefault();
+        return;
+    }
     const inputs = form.querySelectorAll('[required]:not(:disabled)');
 
     for (const input of inputs) {
