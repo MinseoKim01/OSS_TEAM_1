@@ -101,23 +101,31 @@ for (const input of [dateInput, timeInput]) {
 
 updateDateTimeLimits();
 
-// 브라우저 기본 검증을 통과한 뒤 공백만 입력한 값 추가 검사
+const submitButton = form.querySelector('button[type="submit"]');
+
+// 뒤로 가기로 등록 화면에 돌아왔을 때 버튼 잠금 해제
+window.addEventListener('pageshow', () => {
+    submitButton.disabled = false;
+});
+
 form.addEventListener('submit', (event) => {
-        if (!validateDateTime()) {
+    if (submitButton.disabled || !validateDateTime()) {
         event.preventDefault();
         return;
     }
+
     const inputs = form.querySelectorAll('[required]:not(:disabled)');
 
     for (const input of inputs) {
         if (!input.value.trim()) {
-            // 서버로 제출하지 않고 해당 입력칸에 오류 표시
             event.preventDefault();
             input.setCustomValidity('공백만 입력할 수 없습니다.');
             input.reportValidity();
-            break;
+            return;
         }
     }
+
+    submitButton.disabled = true;
 });
 
 // 입력값을 수정하면 비밀번호 재검사 또는 공백 오류 해제

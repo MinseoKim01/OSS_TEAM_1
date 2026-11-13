@@ -9,7 +9,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from storage import save_item
 
 from flask import (
-    Blueprint, current_app, redirect,
+    Blueprint, current_app, flash, redirect,
     render_template, request, url_for,
 )
 
@@ -122,7 +122,8 @@ def register():
                     '저장 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.'
                 )
             else:
-                # 저장 성공 후 목록으로 이동
+                # 저장 성공 후 목록에 완료 메시지 표시
+                flash('분실물이 등록되었습니다.', 'registration_success')
                 return redirect(url_for('main.index'), code=303)
 
     # 입력값과 검사 결과를 HTML에 전달
