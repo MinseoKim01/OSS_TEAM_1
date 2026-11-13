@@ -5,6 +5,11 @@
 </div>
 
 <section class="lost-items-section">
+    {% for message in get_flashed_messages(category_filter=['registration_success']) %}
+        <div id="registration-toast" class="toast show" role="status">
+            {{ message }}
+        </div>
+    {% endfor %}
     <div class="lost-items-header">
         <div class="title-wrap">
             <h2>분실물 목록</h2>

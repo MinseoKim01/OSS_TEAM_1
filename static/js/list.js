@@ -115,6 +115,13 @@ function initRealtimeStatsListener(onCountChanged, intervalMs = 3000) {
 
 
 document.addEventListener('DOMContentLoaded', () => {
+    const registrationToast = document.getElementById('registration-toast');
+
+    if (registrationToast) {
+        setTimeout(() => {
+            registrationToast.classList.remove('show');
+        }, 3000);
+    }
     const listContainer = document.getElementById('lost-items-list');
 
     // 데이터 조회 로딩 화면

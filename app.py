@@ -15,6 +15,7 @@ load_dotenv()
 
 # 앱 생성
 app = Flask(__name__)
+app.config["SECRET_KEY"] = os.environ["SECRET_KEY"]
 
 # DB 접속 정보 설정 (DATABASE_URL을 Flask의 SQLALCHEMY_DATABASE_URI에 전달)
 app.config["SQLALCHEMY_DATABASE_URI"] = os.environ["DATABASE_URL"]
