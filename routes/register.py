@@ -1,6 +1,6 @@
 # routes/register.py
 
-from datetime import date, time
+from datetime import date, datetime, time, timedelta, timezone
 import re
 import bcrypt
 
@@ -63,6 +63,19 @@ def register():
                     parser(values[key])
                 except ValueError:
                     errors.append(f'{label} 형식이 올바르지 않습니다.')
+
+        # 배포 서버의 시간대와 관계없이 입력 일시는 한국 시간으로 해석
+        if not errors:
+            kst = timezone(timedelta(hours=9))
+            entered_at = datetime.combine(
+                date.fromisoformat(values['date']),
+                time.fromisoformat(values['time']),
+                tzinfo=kst,
+            )
+
+            if entered_at > datetime.now(kst):
+                label = '안내 일시' if kind == 'report' else '습득 일시'
+                errors.append(f'{label}는 현재 시각보다 늦을 수 없습니다.')
 
         # 비밀번호를 화면에 다시 전달하지 않도록 values에서 제거
         password = values.pop('password', '')
