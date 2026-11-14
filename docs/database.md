@@ -33,6 +33,66 @@ psql postgres
 `export PATH=...` 설정은 현재 터미널에만 적용됩니다. 계속 사용하려면 해당 줄을 `~/.zshrc`에 추가합니다. 
 Homebrew 기본 설치에서는 현재 macOS 사용자로 관리용 DB에 접속합니다.
 
+### Linux
+
+배포판에 맞는 설치 방법은 [PostgreSQL 공식 Linux 다운로드 안내](https://www.postgresql.org/download/linux/)에서 확인합니다. 배포판의 기본 패키지는 PostgreSQL 17이 아닐 수 있으므로 설치할 서버 버전을 확인하세요.
+
+#### Ubuntu
+
+[PostgreSQL 공식 Ubuntu 안내](https://www.postgresql.org/download/linux/ubuntu/)에 따라 PostgreSQL 패키지 저장소를 등록하고 17 버전을 설치합니다. 아래 명령은 `sudo` 권한이 있는 사용자로 터미널에서 실행합니다.
+
+```bash
+sudo apt update
+sudo apt install postgresql-common
+sudo /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh
+sudo apt update
+sudo apt install postgresql-17
+sudo systemctl start postgresql
+sudo -u postgres psql -p 5432 -d postgres
+```
+
+마지막 명령은 OS의 `postgres` 사용자로 관리용 DB에 접속합니다. `postgres=#` 프롬프트가 나타나면 아래 **2. 앱 전용 계정과 빈 DB 생성**으로 이어서 진행합니다.
+
+#### Arch Linux 계열
+
+[ArchWiki의 PostgreSQL 안내](https://wiki.archlinux.org/title/PostgreSQL)를 참고해 서버를 설치하고, 최초 사용 시 DB 클러스터를 직접 초기화합니다. `psql` 명령이 있어도 클라이언트만 설치된 상태일 수 있으므로 서버 패키지인 `postgresql`이 필요합니다.
+
+아래 명령은 Arch 저장소에서 제공하는 버전을 설치하므로 **PostgreSQL 17 고정 설치가 아닙니다.** 설치된 서버 버전은 `postgres --version`으로 확인하고, 문서 뒤의 마이그레이션·DB 연결 검증으로 프로젝트 실행 여부를 확인하세요.
+
+```bash
+sudo pacman -Syu postgresql
+postgres --version
+```
+
+아래 `initdb` 명령은 `/var/lib/postgres/data`에 기존 DB 클러스터가 없는 최초 설정 때만 실행합니다. 이미 초기화했다면 생략하고 서버 시작부터 진행합니다. 기존 데이터 디렉터리를 삭제하거나 덮어쓰지 않습니다.
+
+`initdb`는 서버가 사용할 데이터 저장 공간과 기본 DB를 준비합니다. 앱 전용 계정과 `moajup` DB는 이후 2단계에서 별도로 생성합니다. `systemctl start`는 준비된 데이터를 사용하는 PostgreSQL 서버를 백그라운드 서비스로 시작합니다. Arch에서는 패키지 설치 후 이 초기화를 생략하면 서버가 시작되지 않습니다.
+
+```bash
+sudo -iu postgres initdb -D /var/lib/postgres/data --locale=C.UTF-8 -E UTF8 --auth-local=peer --auth-host=scram-sha-256
+```
+
+PostgreSQL 서버를 시작하고 연결 상태를 확인합니다. 재부팅 후 서버를 다시 시작할 때도 같은 명령을 사용합니다.
+
+```bash
+sudo systemctl start postgresql
+pg_isready -h localhost -p 5432
+```
+
+`pg_isready`에서 `accepting connections`가 출력되면 서버가 연결을 받을 준비가 된 상태입니다. 부팅 시 자동 시작하려면 `sudo systemctl enable postgresql`을 한 번 실행합니다.
+
+서버가 실행 중인 상태에서 아래 명령으로 관리용 DB에 접속합니다. 기본 포트는 `5432`이며, 다른 포트를 사용한다면 `-p 포트번호`를 추가합니다.
+
+```bash
+sudo -iu postgres psql -d postgres
+```
+
+`sudo`가 요구하는 비밀번호는 현재 Linux 계정의 로그인 비밀번호입니다. `postgres=#` 프롬프트가 나타나면 아래 **2. 앱 전용 계정과 빈 DB 생성**으로 이어서 진행합니다.
+
+초기화 옵션은 UTF-8 인코딩을 사용하고, 로컬 소켓 접속은 OS 사용자로 인증하며 앱의 TCP 접속은 DB 비밀번호로 인증하도록 설정합니다.
+
+다른 Linux 배포판은 패키지 설치 외에 DB 초기화가 필요할 수 있습니다. 해당 배포판의 안내에 따라 설치·초기화·서버 시작을 완료한 뒤 관리용 DB에 접속하세요.
+
 ### Windows 및 기타 환경
 
 [PostgreSQL 공식 다운로드](https://www.postgresql.org/download/)에서 OS에 맞는 PostgreSQL 17을 설치하고 서버를 실행합니다. 
@@ -66,15 +126,11 @@ CREATE DATABASE moajup OWNER moajup_user;
 cp .env.example .env
 ```
 
-`.env`의 `CHANGE_ME`를 앞에서 정한 DB 비밀번호로 바꿉니다.
+`.env`에서 먼저 선언된 `SECRET_KEY`의 `CHANGE_ME`를 앞에서 정한 DB 비밀번호로 바꿉니다. `DATABASE_URL`은 `${SECRET_KEY}`를 참조하므로 한 곳만 변경하면 됩니다. 이 변수 참조는 `python-dotenv`가 `.env`를 읽을 때 적용됩니다.
 
 ```dotenv
-DATABASE_URL=postgresql+psycopg://moajup_user:CHANGE_ME@localhost:5432/moajup
+SECRET_KEY=CHANGE_ME
 ```
-
-- 계정: `moajup_user`, DB: `moajup`, 기본 포트: `5432`
-- `.env`는 Git에 올리지 않습니다. `.env.example`에는 실제 비밀번호를 적지 않습니다.
-- `load_dotenv()`가 값을 로딩하고 `app.py`가 `DATABASE_URL`을 `SQLALCHEMY_DATABASE_URI` 설정에 전달합니다.
 
 ## 4. 공유된 마이그레이션 적용
 
