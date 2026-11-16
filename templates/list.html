@@ -6,9 +6,9 @@
 
 <section class="lost-items-section">
     {% for message in get_flashed_messages(category_filter=['registration_success']) %}
-        <div id="registration-toast" class="toast show" role="status">
-            {{ message }}
-        </div>
+    <div id="registration-toast" class="toast show" role="status">
+        {{ message }}
+    </div>
     {% endfor %}
     <div class="lost-items-header">
         <div class="title-wrap">
@@ -60,19 +60,18 @@
 
 <!-- 빈 목록 안내 화면 -->
 <div id="empty-state" class="empty-state" hidden>
-    <div class="empty-state-icon">
-        <!-- 돋보기 아이콘 -->
-        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <circle cx="11" cy="11" r="7"></circle>
-            <line x1="16" y1="16" x2="21" y2="21"></line>
-        </svg>
-    </div>
-
+    <!-- 캐릭터들이 말하는 말풍선으로 위쪽에 배치 -->
     <p class="empty-state-message">
         아직 등록된 분실물이 없어요
     </p>
 
+    <div class="empty-state-icon">
+        <!-- 캐릭터 이미지 -->
+        <img src="{{ url_for('static', filename='images/모아줍 캐릭터.png') }}" alt="분실물을 찾는 캐릭터"
+            class="empty-state-character">
+    </div>
+
+    <!-- 등록 버튼 -->
     <a href="/register" class="empty-state-button">
         첫 분실물 등록하기
     </a>
