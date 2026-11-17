@@ -43,3 +43,27 @@ def save_item(values, password_hash):
         raise
 
     return item.id
+
+
+def delete_item(item_type, item_id):
+    """유형과 게시글 ID로 해당 게시글을 삭제하고, 삭제 여부를 반환한다."""
+
+    model = {'report': ReportItem, 'found': FoundItem}.get(item_type)
+    if model is None:
+        raise ValueError('지원하지 않는 게시글 유형입니다.')
+
+    item = db.session.get(model, item_id)
+
+    # 삭제할 게시글이 없으면 False 반환
+    if item is None:
+        return False
+
+    try:
+        db.session.delete(item)
+        db.session.commit()
+    except Exception:
+        # 삭제 실패 시 세션을 복구하고 호출한 쪽에서 오류를 처리하도록 전달
+        db.session.rollback()
+        raise
+
+    return True
