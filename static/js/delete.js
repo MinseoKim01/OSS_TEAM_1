@@ -37,3 +37,22 @@ if (passwordResult === 'mismatch' && params.get('id') && params.get('type')) {
 
     deleteDialog.showModal();
 }
+
+// 삭제 확인 버튼 클릭 시 바로 전송하지 않고 한 번 더 확인하는 dialog 열기
+const deleteConfirmDialog = document.getElementById('delete-confirm-dialog');
+const deleteConfirmButton = deleteDialog.querySelector('.delete-confirm-button');
+
+deleteConfirmButton.addEventListener('click', (event) => {
+    event.preventDefault();
+    deleteConfirmDialog.showModal();
+});
+
+// 취소 시 확인 dialog만 닫기
+document.getElementById('delete-confirm-cancel').addEventListener('click', () => {
+    deleteConfirmDialog.close();
+});
+
+// 삭제하기 클릭 시 기존 삭제 form을 삭제 확인 버튼 기준(POST /delete)으로 전송
+document.getElementById('delete-final-button').addEventListener('click', () => {
+    deleteDialog.querySelector('form').requestSubmit(deleteConfirmButton);
+});
