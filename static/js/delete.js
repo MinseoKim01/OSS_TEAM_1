@@ -14,14 +14,24 @@ document.getElementById('modal-delete-btn').addEventListener('click', () => {
     deleteDialog.showModal();
 });
 
-// 비밀번호 비교 결과를 Toast 임시 메시지로 표시
+// 비밀번호 불일치 또는 삭제 성공/실패 결과를 Toast 임시 메시지로 표시
 const params = new URLSearchParams(window.location.search);
 const passwordResult = params.get('password');
+const deleteResult = params.get('deleted');
 
-if (passwordResult === 'match' || passwordResult === 'mismatch') {
+let resultMessage = '';
+
+if (passwordResult === 'mismatch') {
+    resultMessage = '비밀번호가 일치하지 않습니다.';
+} else if (deleteResult === 'success') {
+    resultMessage = '게시글이 삭제되었습니다.';
+} else if (deleteResult === 'fail') {
+    resultMessage = '게시글 삭제에 실패했습니다.';
+}
+
+if (resultMessage) {
     const toast = document.getElementById('toast');
-    document.getElementById('toast-message').textContent =
-        passwordResult === 'match' ? '비밀번호가 같습니다.' : '비밀번호가 일치하지 않습니다.';
+    document.getElementById('toast-message').textContent = resultMessage;
     toast.classList.add('show');
 
     setTimeout(() => {
@@ -37,3 +47,22 @@ if (passwordResult === 'mismatch' && params.get('id') && params.get('type')) {
 
     deleteDialog.showModal();
 }
+
+// 삭제 확인 버튼 클릭 시 바로 전송하지 않고 한 번 더 확인하는 dialog 열기
+const deleteConfirmDialog = document.getElementById('delete-confirm-dialog');
+const deleteConfirmButton = deleteDialog.querySelector('.delete-confirm-button');
+
+deleteConfirmButton.addEventListener('click', (event) => {
+    event.preventDefault();
+    deleteConfirmDialog.showModal();
+});
+
+// 취소 시 확인 dialog만 닫기
+document.getElementById('delete-confirm-cancel').addEventListener('click', () => {
+    deleteConfirmDialog.close();
+});
+
+// 삭제하기 클릭 시 기존 삭제 form을 삭제 확인 버튼 기준(POST /delete)으로 전송
+document.getElementById('delete-final-button').addEventListener('click', () => {
+    deleteDialog.querySelector('form').requestSubmit(deleteConfirmButton);
+});
