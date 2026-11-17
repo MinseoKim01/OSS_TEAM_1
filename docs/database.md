@@ -126,11 +126,15 @@ CREATE DATABASE moajup OWNER moajup_user;
 cp .env.example .env
 ```
 
-`.env`에서 먼저 선언된 `SECRET_KEY`의 `CHANGE_ME`를 앞에서 정한 DB 비밀번호로 바꿉니다. `DATABASE_URL`은 `${SECRET_KEY}`를 참조하므로 한 곳만 변경하면 됩니다. 이 변수 참조는 `python-dotenv`가 `.env`를 읽을 때 적용됩니다.
+`.env`에서 다음 두 값을 각각 설정합니다. 두 값은 용도가 다르므로 서로 다른 값을 사용합니다.
 
 ```dotenv
-SECRET_KEY=CHANGE_ME
+SECRET_KEY=CHANGE_SESSION_SECRET
+DB_PASSWORD=CHANGE_DB_PASSWORD
 ```
+
+- `SECRET_KEY`: Flask 세션 서명용 비밀키입니다. DB 비밀번호와 다른 값을 사용합니다.
+- `DB_PASSWORD`: 앞에서 `\password moajup_user`로 정한 PostgreSQL 접속 비밀번호를 넣습니다.
 
 ## 4. 공유된 마이그레이션 적용
 
