@@ -14,14 +14,24 @@ document.getElementById('modal-delete-btn').addEventListener('click', () => {
     deleteDialog.showModal();
 });
 
-// 비밀번호 비교 결과를 Toast 임시 메시지로 표시
+// 비밀번호 불일치 또는 삭제 성공/실패 결과를 Toast 임시 메시지로 표시
 const params = new URLSearchParams(window.location.search);
 const passwordResult = params.get('password');
+const deleteResult = params.get('deleted');
 
-if (passwordResult === 'match' || passwordResult === 'mismatch') {
+let resultMessage = '';
+
+if (passwordResult === 'mismatch') {
+    resultMessage = '비밀번호가 일치하지 않습니다.';
+} else if (deleteResult === 'success') {
+    resultMessage = '게시글이 삭제되었습니다.';
+} else if (deleteResult === 'fail') {
+    resultMessage = '게시글 삭제에 실패했습니다.';
+}
+
+if (resultMessage) {
     const toast = document.getElementById('toast');
-    document.getElementById('toast-message').textContent =
-        passwordResult === 'match' ? '비밀번호가 같습니다.' : '비밀번호가 일치하지 않습니다.';
+    document.getElementById('toast-message').textContent = resultMessage;
     toast.classList.add('show');
 
     setTimeout(() => {
