@@ -19,6 +19,8 @@
 
     <main class="container">
         <br><br>
+        <a href="{{ url_for('main.index') }}">← 목록으로 돌아가기</a>
+        <br><br>
         <h1>분실물 검색</h1>
         <br><br>
         <form class="search-controls" action="{{ url_for('search.search') }}" method="get">
